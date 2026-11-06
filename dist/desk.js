@@ -7,6 +7,4 @@ id('work-search').onclick=()=>id('search').focus({preventScroll:true});
 function body(){return 'Project direction: '+(id('kind').value||'Open idea')+'\n\n'+id('idea').value.trim()+'\n\nFrom: '+id('who').value.trim()}
 id('brief-form').onsubmit=e=>{e.preventDefault();location.href='mailto:hello@greylad.me?subject='+encodeURIComponent('Greylad idea: '+(id('kind').value||'New project'))+'&body='+encodeURIComponent(body());id('brief-result').textContent='If no email app opened, use Copy brief.'};
 id('copybrief').onclick=async()=>{if(!id('brief-form').reportValidity())return;try{await navigator.clipboard.writeText(body());id('brief-result').textContent='Brief copied.'}catch{id('brief-result').textContent=body()}};
-const f=id('font'),allowed=[...f.options].map(o=>o.value);function apply(name){if(!allowed.includes(name))return;f.value=name;document.documentElement.style.setProperty('--face','"'+name+'",Arial,sans-serif')}
-try{apply(localStorage.getItem('greylad-preview-face'))}catch{} f.onchange=()=>{apply(f.value);try{localStorage.setItem('greylad-preview-face',f.value)}catch{}};
 })();

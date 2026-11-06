@@ -7,12 +7,13 @@ html=(root/'index.html').read_text()
 css=(root/'styles.css').read_text()
 css=re.sub(r'^@import[^\n]+\n', '',css, count=1)
 tokens=(root/'brand-tokens.css').read_text()
-for f in ['styles.css','brand-tokens.css']:
+css+='\n'+(root/'desk.css').read_text()
+for f in ['styles.css','brand-tokens.css','desk.css']:
  html=html.replace(f'<link rel="stylesheet" href="{f}">','')
 html=html.replace('</head>',f'<style>{tokens}\n{css}</style></head>')
-for f in ['config.js','content.js','app.js']:
+for f in ['config.js','content.js','app.js','desk.js']:
  html=html.replace(f'<script defer src="{f}"></script>','')
-for f in ['config.js','content.js','app.js']:
+for f in ['config.js','content.js','app.js','desk.js']:
  js=(root/f).read_text()
  html=html.replace('</body>',f'<script>{js}</script></body>')
 for f in ['favicon.svg','spiral-g.svg','spiral-g-light.svg','assets/beyond-the-goal-cover.webp']:
@@ -37,7 +38,7 @@ with sync_playwright() as p:
    except Exception as err:
     results.append({'width':width,'check':name,'pass':False,'error':str(err)})
   check('no errors on load',lambda:not errors)
-  check('correct tagline',lambda:'A curious mind.' in page.locator('h1').inner_text() and 'possibilities.' in page.locator('h1').inner_text())
+  check('correct tagline',lambda:'You imagine.' in page.locator('h1').inner_text())
   check('book cover embedded and loaded',lambda:page.locator('.book-cover').evaluate('(img) => img.complete && img.naturalWidth === 943'))
   check('no horizontal overflow',lambda:page.evaluate('document.documentElement.scrollWidth <= innerWidth + 2'))
   check('book cover links to Amazon',lambda:page.locator('.book-cover-wrap').get_attribute('href')=='https://amzn.eu/d/06k6AIZ5')
@@ -70,8 +71,9 @@ with sync_playwright() as p:
   page.locator('[data-project="pharm"]').click()
   check('pharm project modal',lambda:page.locator('#detail').evaluate('(x)=>x.open') and 'Materials' in page.locator('#detail-title').inner_text())
   page.locator('.dialog-close').click()
-  page.locator('[data-select-discipline="health"]').click()
-  check('hero rail opens Health',lambda:page.locator('#discipline-eyebrow').text_content()=='Health')
+  page.locator('[data-pick="7"]').click()
+  page.locator('#start-brief').click()
+  check('idea carries into brief',lambda:page.locator('#kind').input_value()=='Property management')
   page.locator('#copy-email').click()
   check('copy email gives feedback',lambda:bool(page.locator('#copy-status').text_content().strip()))
   # Team tabs

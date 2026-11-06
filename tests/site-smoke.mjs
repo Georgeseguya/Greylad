@@ -9,7 +9,7 @@ const content=file('dist/content.js');
 
 test('hero presents the intended copy',()=>{
   assert.match(html,/A curious mind\./);
-  assert.match(html,/A world of<br><em>possibilities\.<\/em>/);
+  assert.match(html,/A world of possibilities\./);
 });
 
 test('the five disciplines are open-ended and ordered correctly',()=>{
@@ -47,8 +47,8 @@ test('neutral brand palette and contact links remain',()=>{
   assert.match(css,/#34363B/i);
   assert.match(css,/#F6F6F4/i);
   assert.match(css,/#A8ADB4/i);
-  assert.match(html,/mailto:georgeseguya@yahoo\.com/);
-  assert.match(html,/tel:\+2567770447726/);
+  assert.match(html,/mailto:george@greylad\.me/);
+  assert.match(html,/tel:\+256770447726/);
 });
 
 test('public source contains no retired material or tool attribution',()=>{
