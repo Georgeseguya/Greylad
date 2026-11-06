@@ -14,3 +14,7 @@ The logo is a scalable geometric G drawn from concentric curved lines, closely f
 Use `dist/spiral-g-light.svg` on graphite backgrounds, `dist/spiral-g.svg` on light backgrounds, and `dist/favicon.svg` at small icon sizes. `dist/greylad-logo-512.png` is the square app logo. All variants are generated from the same curves; PNG alternatives are included.
 
 Site copy uses we/our for Greylad; the personal attribution appears once in the lower About section. The public pages use writing rather than storytelling language.
+
+## Typography
+
+Space Grotesk is the Greylad signature typeface for websites, apps and future interfaces. Use the original spiral-g artwork unchanged. Bundle the font with offline tools and include its SIL Open Font License.

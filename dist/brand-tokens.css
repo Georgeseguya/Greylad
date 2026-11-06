@@ -20,6 +20,6 @@
   --ink: var(--graphite);      /* Primary text */
   --paper: var(--pearl);       /* Legacy compatibility for current Greylad HTML */
   --line: var(--border);       /* Legacy compatibility */
-  --font: 'Manrope', Arial, sans-serif;
+  --font: 'Space Grotesk', Arial, sans-serif;
   --focus: #5A5E66;           /* Visible neutral focus outline */
 }
