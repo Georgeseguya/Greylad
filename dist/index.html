@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#34363B">
-<meta name="description" content="Greylad — pharmaceutics, technology, health, research and writing. Selected work, products, publications and the people behind them.">
+<meta name="description" content="Greylad turns ideas into useful software, from everyday planners to systems for healthcare and business.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Greylad — A curious mind. A world of possibilities.">
-<meta property="og:description" content="Pharmaceutics. Technology. Health. Research. Writing.">
+<meta property="og:description" content="Explore practical tools, see what Greylad is building and bring an idea of your own.">
 <title>Greylad — A curious mind. A world of possibilities.</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="brand-tokens.css">
@@ -15,40 +15,41 @@
 <script defer src="config.js"></script>
 <script defer src="content.js"></script>
 <script defer src="app.js"></script>
-</head>
+<meta name="robots" content="noindex,nofollow"><link rel="stylesheet" href="desk.css"><script defer src="desk.js"></script></head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
 <div class="progress" aria-hidden="true"><span id="scroll-progress"></span></div>
 <header class="header" id="top">
   <a href="#top" class="brand" aria-label="Greylad homepage"><img src="favicon.svg" alt="" width="36" height="36"><span>greylad<span class="brand-dot">.</span></span></a>
-  <nav class="nav" id="nav" aria-label="Main navigation">
-    <a href="#disciplines">Disciplines</a><a href="#projects">Projects</a><a href="#research">Research</a><a href="#writing">Writing</a><a href="#team">Team</a><a href="#contact" class="nav-contact">Get in touch <span aria-hidden="true">↗</span></a>
-  </nav>
+  <nav class="nav" id="nav" aria-label="Main navigation"><a href="#desk">Idea Desk</a><a href="#projects">Projects</a><a href="#disciplines">Disciplines</a><a href="#research" id="work-search">Search work</a><a href="#team">Team</a><a href="#brief" class="nav-contact">Bring an idea ↗</a></nav>
   <button type="button" class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="nav" aria-label="Open menu"><span></span><span></span></button>
 </header>
 <main id="main">
-  <section class="hero" aria-labelledby="hero-title">
-    <div class="hero-inner">
-      <div class="hero-copy">
-        <p class="eyebrow hero-eyebrow"><span class="pin" aria-hidden="true"></span> GREYLAD</p>
-        <h1 id="hero-title">A curious mind.<br>A world of<br><em>possibilities.</em></h1>
-        <div class="hero-closer">
-          <p>Pharmaceutical science, digital products, healthcare and writing.</p>
-          <a href="#projects" class="button button-pearl">Explore the work <span aria-hidden="true">↗</span></a>
-        </div>
-      </div>
-      <div class="hero-art" id="hero-art" aria-label="Greylad concentric-line G mark">
-        <div class="hero-art-grid" aria-hidden="true"></div>
-        <img src="spiral-g-light.svg" width="570" height="570" alt="Greylad spiral G emblem" class="hero-g" />
-        <a class="hero-art-link" href="#disciplines">Explore disciplines <span aria-hidden="true">↗</span></a>
-      </div>
-    </div>
-    <div class="hero-rail" aria-label="Disciplines">
-      <a href="#disciplines" data-select-discipline="pharm">Pharmaceutics</a>
-      <a href="#disciplines" data-select-discipline="tech">Technology</a>
-      <a href="#disciplines" data-select-discipline="health">Health</a>
-      <a href="#disciplines" data-select-discipline="research">Research</a>
-      <a href="#disciplines" data-select-discipline="writing">Writing</a>
+  <section class="studiohero" aria-labelledby="hero-title"><div class="herogrid"><div><p class="kicker">A curious mind. A world of possibilities.</p><h1 id="hero-title">You imagine.<br>Let’s make<br><span>it work.</span></h1><p class="dek">A planner for your day. A system for your business. Something you haven’t found the words for yet.</p><a href="#brief" class="button button-pearl">Bring your idea ↗</a> <a href="#desk" class="secondlink">Explore the desk ↓</a></div>
+<div id="hero-art" class="drawing" aria-label="Greylad spiral G on a drawing sheet"><div class="ruler">GREYLAD &nbsp; / &nbsp; DESIGN SHEET</div><img src="spiral-g-light.svg" alt="" width="350" height="350"><div class="ruler footrule">FIG. G &nbsp; / &nbsp; THE ORIGINAL MARK</div></div></div></section>
+<section class="section desk" id="desk"><div class="section-intro"><p class="eyebrow">Idea Desk</p><h2>What would you build?</h2><p class="intro-side">Choose a direction. See the work it could simplify, then make the brief your own.</p></div><div class="deskgrid"><div class="picklist" role="group" aria-label="Project directions"><button type="button" data-pick="0" aria-pressed="true"><span>Planners & trackers</span><span aria-hidden="true">↗</span></button><button type="button" data-pick="1" aria-pressed="false"><span>Healthcare systems</span><span aria-hidden="true">↗</span></button><button type="button" data-pick="2" aria-pressed="false"><span>Project management</span><span aria-hidden="true">↗</span></button><button type="button" data-pick="3" aria-pressed="false"><span>Document management</span><span aria-hidden="true">↗</span></button><button type="button" data-pick="4" aria-pressed="false"><span>Supply & demand</span><span aria-hidden="true">↗</span></button><button type="button" data-pick="5" aria-pressed="false"><span>Point of sale</span><span aria-hidden="true">↗</span></button><button type="button" data-pick="6" aria-pressed="false"><span>Web development</span><span aria-hidden="true">↗</span></button><button type="button" data-pick="7" aria-pressed="false"><span>Property management</span><span aria-hidden="true">↗</span></button></div><article class="sheet" aria-live="polite"><div class="sheetmeta"><span>CONCEPT SHEET</span><span id="sheetnum">01 / 08</span></div><h3 id="desk-title">A week you can actually plan.</h3><p id="desk-copy">Turn a list of competing tasks into a plan people can follow.</p><ol id="desk-steps"><li>Set priorities</li><li>Assign tasks</li><li>Review progress</li></ol><a class="button button-dark" id="start-brief" href="#brief">Start with this idea ↗</a></article></div></section>
+<section class="section stages"><h2>From an idea to a first version.</h2><div><article><small>01 / Describe</small><h3>Show us the friction.</h3><p>What are you doing by hand? Who needs a better way to do it?</p></article><article><small>02 / Try</small><h3>Put it on screen.</h3><p>A working sketch lets you try the important steps before deciding what belongs in the build.</p></article><article><small>03 / Refine</small><h3>Use it together.</h3><p>Bring feedback from the people doing the work. Agree what to keep, what to change and what comes next.</p></article></div></section>
+<section id="projects" class="section projects-section" aria-labelledby="projects-title">
+    <div class="section-intro"><p class="eyebrow">Projects</p><h2 id="projects-title">Selected work.</h2><p class="intro-side">Applications, research and ideas under development.</p></div>
+    <div class="project-grid">
+      <article class="project-card project-vyba">
+        <div class="project-card-top"><span>Software</span><span>Live product</span></div>
+        <div class="project-copy"><h3>VybaCash</h3><p>A personal finance application for income, expenses, savings goals and spending decisions.</p></div>
+        <div class="mini-dashboard" aria-hidden="true"><div class="mini-dash-top"><strong>VybaCash</strong><span>Overview</span></div><div class="mini-dash-main"><span class="mini-pill">Cash balance</span><div class="mini-number">Everything in view.</div><div class="mini-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>
+        <a href="https://vybacash.greylad.me/" class="project-action" target="_blank" rel="noopener noreferrer">Open VybaCash <span aria-hidden="true">↗</span></a>
+      </article>
+      <article class="project-card project-health">
+        <div class="project-card-top"><span>Health · Technology</span><span>In development</span></div>
+        <div class="project-copy"><h3>Health data<br>systems</h3><p>Connected records and reporting tools for healthcare facilities, medicines and public-health planning.</p></div>
+        <div class="health-lines" aria-hidden="true"><svg viewBox="0 0 350 130"><path d="M0 80h68l22-41 43 86 40-63 26 18h151" stroke="currentColor" fill="none" stroke-width="3"/><path d="M0 106h350" stroke="currentColor" opacity=".2"/><circle cx="210" cy="80" r="8" fill="currentColor"/></svg></div>
+        <button type="button" class="project-action" data-project="health">View the concept <span aria-hidden="true">↗</span></button>
+      </article>
+      <article class="project-card project-pharm">
+        <div class="project-card-top"><span>Pharmaceutics · Research</span><span>Research</span></div>
+        <div class="project-copy"><h3>Oral dosage-form research</h3><p>Excipient choices, manufacturing routes and their influence on immediate-release oral dosage forms.</p></div>
+        <div class="pill-graphic" aria-hidden="true"><div class="pill-graphic-ring"><div class="pill-graphic-center"></div></div></div>
+        <button type="button" class="project-action" data-project="pharm">Read about the research <span aria-hidden="true">↗</span></button>
+      </article>
     </div>
   </section>
 
@@ -75,30 +76,6 @@
         </div>
         <div class="disc-copy"><p class="eyebrow" id="discipline-eyebrow">Pharmaceutics</p><h3 id="discipline-title">From formulation to manufacture.</h3><p id="discipline-description">Dosage-form development, manufacturing processes, technology transfer and the science of product quality.</p><a href="#projects" class="text-link" id="discipline-link">View related work <span aria-hidden="true">↗</span></a></div>
       </div>
-    </div>
-  </section>
-
-  <section id="projects" class="section projects-section" aria-labelledby="projects-title">
-    <div class="section-intro"><p class="eyebrow">Projects</p><h2 id="projects-title">Selected work.</h2><p class="intro-side">Applications, research and ideas under development.</p></div>
-    <div class="project-grid">
-      <article class="project-card project-vyba">
-        <div class="project-card-top"><span>Software</span><span>Live product</span></div>
-        <div class="project-copy"><h3>VybaCash</h3><p>A personal finance application for income, expenses, savings goals and spending decisions.</p></div>
-        <div class="mini-dashboard" aria-hidden="true"><div class="mini-dash-top"><strong>VybaCash</strong><span>Overview</span></div><div class="mini-dash-main"><span class="mini-pill">Cash balance</span><div class="mini-number">Everything in view.</div><div class="mini-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>
-        <a href="https://vybacash.greylad.me/" class="project-action" target="_blank" rel="noopener noreferrer">Open VybaCash <span aria-hidden="true">↗</span></a>
-      </article>
-      <article class="project-card project-health">
-        <div class="project-card-top"><span>Health · Technology</span><span>In development</span></div>
-        <div class="project-copy"><h3>Health data<br>systems</h3><p>Connected records and reporting tools for healthcare facilities, medicines and public-health planning.</p></div>
-        <div class="health-lines" aria-hidden="true"><svg viewBox="0 0 350 130"><path d="M0 80h68l22-41 43 86 40-63 26 18h151" stroke="currentColor" fill="none" stroke-width="3"/><path d="M0 106h350" stroke="currentColor" opacity=".2"/><circle cx="210" cy="80" r="8" fill="currentColor"/></svg></div>
-        <button type="button" class="project-action" data-project="health">View the concept <span aria-hidden="true">↗</span></button>
-      </article>
-      <article class="project-card project-pharm">
-        <div class="project-card-top"><span>Pharmaceutics · Research</span><span>Research</span></div>
-        <div class="project-copy"><h3>Oral dosage-form research</h3><p>Excipient choices, manufacturing routes and their influence on immediate-release oral dosage forms.</p></div>
-        <div class="pill-graphic" aria-hidden="true"><div class="pill-graphic-ring"><div class="pill-graphic-center"></div></div></div>
-        <button type="button" class="project-action" data-project="pharm">Read about the research <span aria-hidden="true">↗</span></button>
-      </article>
     </div>
   </section>
 
@@ -148,9 +125,9 @@
     </div>
   </section>
 
-  <section id="contact" class="contact-section" aria-labelledby="contact-title"><div class="contact-content"><div><p class="eyebrow">Contact</p><h2 id="contact-title">Get in touch.</h2><p>For project enquiries, research and collaboration.</p></div><div class="contact-links"><a href="mailto:george@greylad.me" class="contact-row"><span>George Seguya</span><strong>george@greylad.me</strong><span aria-hidden="true">↗</span></a><a href="mailto:hello@greylad.me" class="contact-row"><span>General enquiries</span><strong>hello@greylad.me</strong><span aria-hidden="true">↗</span></a><a href="tel:+2567770447726" class="contact-row"><span>Phone</span><strong>+256 777 044 7726</strong><span aria-hidden="true">↗</span></a><button type="button" id="copy-email" class="copy-contact" data-email="george@greylad.me">Copy George’s email <span aria-hidden="true">⧉</span></button><p id="copy-status" class="sr-only" role="status"></p></div></div></section>
+  <section id="brief" class="section brief"><div><p class="eyebrow">Bring an idea</p><h2>What’s on<br>your mind?</h2><p>You don’t need a finished proposal. Tell us who it’s for, what gets in their way and what you’d like to change.</p></div><form id="brief-form"><label>Project direction<select id="kind"><option value="">Choose a direction</option><option>Planners & trackers</option><option>Healthcare systems</option><option>Project management</option><option>Document management</option><option>Supply & demand</option><option>Point of sale</option><option>Web development</option><option>Property management</option><option>Something else</option></select></label><label>Your idea<textarea id="idea" required rows="4" maxlength="2500" placeholder="I’d like a way to…"></textarea></label><label>Your name<input id="who" autocomplete="name" required maxlength="120"></label><button type="submit" class="button button-dark">Prepare email draft ↗</button><p>Review and send from your email app, or copy the brief to email <a href="mailto:hello@greylad.me">hello@greylad.me</a>.</p><button type="button" id="copybrief">Copy brief</button><p id="brief-result" role="status"></p></form></section><section id="contact" class="contact-section" aria-labelledby="contact-title"><div class="contact-content"><div><p class="eyebrow">Contact</p><h2 id="contact-title">Get in touch.</h2><p>For project enquiries, research and collaboration.</p></div><div class="contact-links"><a href="mailto:george@greylad.me" class="contact-row"><span>George Seguya</span><strong>george@greylad.me</strong><span aria-hidden="true">↗</span></a><a href="mailto:hello@greylad.me" class="contact-row"><span>General enquiries</span><strong>hello@greylad.me</strong><span aria-hidden="true">↗</span></a><a href="tel:+2567770447726" class="contact-row"><span>Phone</span><strong>+256 777 044 7726</strong><span aria-hidden="true">↗</span></a><button type="button" id="copy-email" class="copy-contact" data-email="george@greylad.me">Copy George’s email <span aria-hidden="true">⧉</span></button><p id="copy-status" class="sr-only" role="status"></p></div></div></section>
 </main>
 <footer class="footer"><a href="#top" class="footer-brand" aria-label="Back to top"><img src="favicon.svg" alt="" width="29" height="29"><span>greylad.</span></a><span>Pharmaceutics · Technology · Health · Research · Writing</span><span>© <span id="year">2026</span> Greylad</span></footer>
 <dialog id="detail" aria-labelledby="detail-title"><div class="dialog-top"><span id="detail-category" class="eyebrow"></span><button type="button" class="dialog-close" aria-label="Close details">×</button></div><h2 id="detail-title"></h2><p id="detail-body"></p><a id="detail-link" class="button button-dark" href="#" target="_blank" rel="noopener noreferrer" hidden>Open resource <span aria-hidden="true">↗</span></a></dialog>
-</body>
+<details class="fontlab" open><summary>Preview typeface</summary><label>Try a font <select id="font"><option>Manrope</option><option>DM Sans</option><option>Space Grotesk</option><option>Plus Jakarta Sans</option></select></label></details></body>
 </html>
