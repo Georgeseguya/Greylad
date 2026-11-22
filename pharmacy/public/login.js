@@ -8,5 +8,19 @@ async function request(body){if(!auth)throw Error('Please sign in.');if(auth.ses
 function signedOut(){auth=null;store();frame.removeAttribute('srcdoc');frame.hidden=true;document.querySelector('#login').hidden=false;form.reset();}
 window.Live={request,command:async(commands,revision)=>{if(saving)throw Error('A save is already in progress.');saving=true;try{return await request({action:'command',commands,revision,requestId:crypto.randomUUID()});}finally{saving=false;}},logout:async()=>{try{await request({action:'logout'});}finally{signedOut();}}};
 async function openWorkspace(){const boot=await request({action:'workspace'}),r=await fetch('/workspace.html',{cache:'no-store'});if(!r.ok)throw Error('Workspace could not be loaded.');const html=await r.text();frame.srcdoc=html.replace('<head>','<head><script>window.BOOT='+JSON.stringify(boot).replace(/</g,'\\u003c')+';</script>');frame.hidden=false;document.querySelector('#login').hidden=true;form.reset();}
+
+const ownerForm=document.querySelector('#owner-form');
+ownerForm.onsubmit=async e=>{
+ e.preventDefault();const msg=document.querySelector('#owner-error'),btn=document.querySelector('#create-owner');
+ const d=Object.fromEntries(new FormData(ownerForm));
+ if(d.password!==d.confirmPassword){msg.textContent='Passwords do not match.';return;}
+ msg.textContent='';btn.disabled=true;
+ try{
+  const result=await call({action:'registerOwner',email:d.email,username:d.username,password:d.password});
+  ownerForm.reset();
+  msg.style.color='#416e51';msg.textContent=result.message||'Check your email to confirm your account.';
+ }catch(err){msg.style.color='#9a3340';msg.textContent=err.message;}
+ finally{btn.disabled=false;}
+};
 form.onsubmit=async e=>{e.preventDefault();error.textContent='';const btn=document.querySelector('#sign-in');btn.disabled=true;try{const d=Object.fromEntries(new FormData(form));auth=await call({action:'login',...d,pharmacy:d.pharmacy.trim().toLowerCase().replace(/\s+/g,'-')});store();await openWorkspace();}catch(e){error.textContent=e.message;}finally{btn.disabled=false;}};
 if(!config.apiUrl){error.textContent='The live workspace is awaiting database activation.';document.querySelector('#sign-in').disabled=true;}else if(auth)openWorkspace().catch(e=>{signedOut();error.textContent=e.message;});
