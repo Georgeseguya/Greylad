@@ -8,3 +8,5 @@ for(const name of Object.keys(Commands.specs)){
  window.pendingCommands.push({name,args:a});return result;};
 }
 Access.tabs.overview='stock.read';Access.tabs.customers='sell';
+
+Access.tabs.tradeprices='catalogue.write';

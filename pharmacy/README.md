@@ -9,6 +9,8 @@ Future domain, not yet attached: pharmacy.greylad.me
 
 The interface and backend source are prepared. **The dedicated Supabase project has not been created because the organisation has reached its free-project limit.** The published sign-in page remains closed until that project is provisioned and hosted integration checks pass. Do not enter real pharmacy or patient records before activation.
 
+Source is stored under `pharmacy/` on the `pharmacy-online` branch of `Georgeseguya/Greylad`. Production deployments select this branch explicitly. Do not change the main Greylad website project or point this app at the repository default branch.
+
 ## Build and verify
 
 Use Node 22 or later. Run `npm ci`, `npm run build`, then `npm test`.

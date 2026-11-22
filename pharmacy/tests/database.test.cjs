@@ -5,5 +5,15 @@ test('database denies direct client access and rejects stale writes and suspende
  await db.query('insert into auth.users values($1,$2)',[uid,'admin@example.test']);await db.query('insert into gp_pharmacies(id,name,slug) values($1,$2,$3)',[pid,'Pharmacy','pharmacy']);await db.query("insert into gp_memberships(id,pharmacy_id,user_id,username,name,email,designation,role) values($1,$2,$3,'admin','Admin','admin@example.test','Admin','Admin')",[mid,pid,uid]);await db.query('insert into gp_workspaces values($1,0,$2,now())',[pid,JSON.stringify({settings:{pharmacyId:pid}})]);
  await db.exec('set role authenticated');await assert.rejects(()=>db.query('select * from gp_workspaces'),/permission denied/);await assert.rejects(()=>db.query("select gp_login_attempt('x')"),/permission denied/);await db.exec('reset role');
  const args=[pid,uid,mid,'Admin',0,JSON.stringify({settings:{pharmacyId:pid}}),'00000000-0000-4000-8000-000000000004','sale'];await db.query('select gp_commit($1,$2,$3,$4,$5,$6,$7,$8)',args);await assert.rejects(()=>db.query('select gp_commit($1,$2,$3,$4,$5,$6,$7,$8)',args),/CONFLICT/);
- await db.query("update gp_memberships set status='Suspended' where id=$1",[mid]);args[4]=1;await assert.rejects(()=>db.query('select gp_commit($1,$2,$3,$4,$5,$6,$7,$8)',args),/access changed/);assert.equal((await db.query('select count(*)::int as n from gp_audit')).rows[0].n,1);await db.close();
+ await db.query("update gp_memberships set status='Suspended' where id=$1",[mid]);args[4]=1;await assert.rejects(()=>db.query('select gp_commit($1,$2,$3,$4,$5,$6,$7,$8)',args),/access changed/);assert.equal((await db.query('select count(*)::int as n from gp_audit')).rows[0].n,1);
+ await db.query("update gp_memberships set status='Active' where id=$1",[mid]);
+ const staffUser='00000000-0000-4000-8000-000000000005',staff='00000000-0000-4000-8000-000000000006';
+ await db.query('insert into auth.users values($1,$2)',[staffUser,'staff@example.test']);
+ await db.query("insert into gp_memberships(id,pharmacy_id,user_id,username,name,email,designation,role) values($1,$2,$3,'staff','Staff','staff@example.test','Cashier','Cashier')",[staff,pid,staffUser]);
+ const change=[pid,uid,staff,'Manager','Manager','Active','Change','00000000-0000-4000-8000-000000000007'];
+ await assert.rejects(()=>db.query('select gp_change_member($1,$2,$3,$4,$5,$6,$7,$8)',change),/Invalid account/);
+ change[3]='Pharmacist';change[4]='Pharmacist';await db.query('select gp_change_member($1,$2,$3,$4,$5,$6,$7,$8)',change);
+ assert.equal((await db.query('select count(*)::int as n from gp_email_outbox')).rows[0].n,2);
+ change[2]=mid;await assert.rejects(()=>db.query('select gp_change_member($1,$2,$3,$4,$5,$6,$7,$8)',change),/platform-managed/);
+ await db.close();
 });

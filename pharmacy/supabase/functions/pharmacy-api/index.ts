@@ -30,7 +30,7 @@ async function view(u:any,pharmacy:any,data?:any){
  if(!may('staff'))out.employees=[];
  if(!may('finance')){out.cashMovements=[];out.closings=[];}
  if(!may('reports'))out.editHistory=[];
- if(!may('sell')){out.invoices=[];out.customers=[];out.sales=out.sales.map((s:any)=>({id:s.id,order:s.order,date:s.date,lines:s.lines.map((l:any)=>({batchId:l.batchId,qty:l.qty}))}));}
+ if(!may('sell')&&!may('reports')){out.invoices=[];out.customers=[];out.sales=out.sales.map((s:any)=>({id:s.id,order:s.order,date:s.date,lines:s.lines.map((l:any)=>({batchId:l.batchId,qty:l.qty}))}));}
  const members=may('accounts')?(await rest('gp_memberships?pharmacy_id=eq.'+u.pharmacyId)).map(member):[u];
  out.access={pharmacyId:u.pharmacyId,pharmacyName:pharmacy.name,mode:'online',accounts:members,audit:[],emails:[]};
  return {state:out,accountId:u.id};

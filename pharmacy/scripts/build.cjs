@@ -14,8 +14,8 @@ for(const [start,end,s] of edits.sort((a,b)=>b[0]-a[0]))ui=ui.slice(0,start)+s+u
 ui=ui.replace("const demoMode=new URLSearchParams(location.search).get('demo')==='1';","const demoMode=false;")
 .replace(/let state=\{access:null,patients:.*?},tab='catalogue'/,"let state=window.BOOT.state,tab='overview'")
 .replace('let accountSession=null,','let accountSession=window.BOOT.accountId,')
-.replace("const labels={accounts:","const labels={overview:['Overview','Overview',''],customers:['Business customers','Business customers',''],accounts:")
-.replace("if(tab==='catalogue')$('#content')","if(tab==='overview')renderOverview();else if(tab==='customers')renderCustomers();else if(tab==='catalogue')$('#content')")
+.replace("const labels={accounts:","const labels={tradeprices:['Wholesale prices','Wholesale prices',''],overview:['Overview','Overview',''],customers:['Business customers','Business customers',''],accounts:")
+.replace("if(tab==='catalogue')$('#content')","if(tab==='tradeprices')renderTradePrices();else if(tab==='overview')renderOverview();else if(tab==='customers')renderCustomers();else if(tab==='catalogue')$('#content')")
 .replace("$('#stats').hidden=tab!=='catalogue'","$('#stats').hidden=!['catalogue','overview'].includes(tab)")
 .replace("confirmed:$('#payment-confirmed')?.checked||false","confirmed:$('#payment-confirmed')?.checked||false,customerId:checkoutCustomer")
 .replace("P.createInvoice(state,cart,d,today()","P.createInvoice(state,cart,{...d,customerId:checkoutCustomer},today()")
@@ -28,7 +28,7 @@ let html=read('scripts/base.html').replace(/<!--[\s\S]*?-->/g,'').replace(/<scri
 html=html.replace(/<meta name="description"[^>]*>/,'<meta name="description" content="Greylad Pharmacy workspace">');
 html=html.replace(/<title>.*?<\/title>/,'<title>Greylad Pharmacy</title>').replace(/VERSION 0\.20/g,'GREYLAD PHARMACY').replace(/Version 0\.20/g,'Greylad Pharmacy');
 html=html.replace('<nav','<nav'); // Preserve the tested responsive shell.
-html=html.replace(/(<nav[^>]*>)/,'$1<button data-tab="overview">Overview</button><button data-tab="customers">Business customers</button>');
+html=html.replace(/(<nav[^>]*>)/,'$1<button data-tab="overview">Overview</button><button data-tab="customers">Business customers</button><button data-tab="tradeprices">Wholesale prices</button>');
 html=html.replace(/<input[^>]*id="restore-file"[^>]*>/,'');
 // Public workspace markup is inert until a verified session supplies BOOT.
 const scripts=['server/pack-core.js','server/access.js','server/core.js','server/commands.js','scripts/bridge.js','scripts/generated-ui.js','scripts/pack-ui.js','scripts/live-ui.js','scripts/theme-ui.js','scripts/receipt-print.js','scripts/release-ui.js'];
