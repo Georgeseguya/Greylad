@@ -42,15 +42,42 @@ Deno.serve(async req=>{
  if(req.headers.get('origin')&&req.headers.get('origin')!==site)throw new ApiError('Origin not allowed.',403);
  const raw=await req.text();if(raw.length>2*1024*1024)throw new ApiError('Request too large.',413);
  const b=JSON.parse(raw),action=b.action;
+ if(action==='registerOwner'){
+ const email=String(b.email||'').trim().toLowerCase(),username=String(b.username||'').trim().toLowerCase();
+ const password=String(b.password||'');
+ if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)||!/^[a-z0-9][a-z0-9._-]{2,39}$/.test(username)||password.length<10||password.length>1000)throw new ApiError('Enter a valid email, username and a password of at least 10 characters.');
+ const claims=await rest('gp_owner_claims?email=eq.'+encodeURIComponent(email)+'&claimed_at=is.null');
+ if(claims.length!==1||claims[0].username!==username)throw new ApiError('This account is not approved for registration.',403);
+ const digest=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode('register:'+email)))).map(x=>x.toString(16).padStart(2,'0')).join('');
+ if(!await rest('rpc/gp_login_attempt',{p_key:digest}))throw new ApiError('Too many attempts. Try again later.',429);
+ await api('/auth/v1/signup',{email,password,data:{username}},'POST',pub);
+ return Response.json({ok:true,message:'Check your email for the verification link, then sign in.'},{headers});
+ }
  if(action==='login'){
  const slug=String(b.pharmacy||'').trim().toLowerCase(),username=String(b.username||'').trim().toLowerCase();
  if(!/^[a-z0-9-]{3,80}$/.test(slug)||!/^[a-z0-9][a-z0-9._-]{2,39}$/.test(username)||typeof b.password!=='string'||b.password.length>1000)throw new ApiError('Check your pharmacy, username and password.',401);
  const digest=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(slug+':'+username)))).map(x=>x.toString(16).padStart(2,'0')).join('');
  if(!await rest('rpc/gp_login_attempt',{p_key:digest}))throw new ApiError('Too many sign-in attempts. Try again in 15 minutes.',429);
- const ps=await rest('gp_pharmacies?slug=eq.'+encodeURIComponent(slug)+'&active=eq.true');
- const ms=ps.length?await rest('gp_memberships?pharmacy_id=eq.'+ps[0].id+'&username=eq.'+encodeURIComponent(username)+'&status=eq.Active'):[];
- if(ms.length!==1)throw new ApiError('Check your pharmacy, username and password.',401);
- let session;try{session=await api('/auth/v1/token?grant_type=password',{email:ms[0].email,password:b.password},'POST',pub);}catch{throw new ApiError('Check your pharmacy, username and password.',401);}
+ let ps=await rest('gp_pharmacies?slug=eq.'+encodeURIComponent(slug)+'&active=eq.true');
+ let ms=ps.length?await rest('gp_memberships?pharmacy_id=eq.'+ps[0].id+'&username=eq.'+encodeURIComponent(username)+'&status=eq.Active'):[];
+ let session;
+ if(ms.length!==1){
+   const claims=await rest('gp_owner_claims?pharmacy_slug=eq.'+encodeURIComponent(slug)+'&username=eq.'+encodeURIComponent(username)+'&claimed_at=is.null');
+   if(claims.length!==1)throw new ApiError('Check your pharmacy, username and password.',401);
+   try{session=await api('/auth/v1/token?grant_type=password',{email:claims[0].email,password:b.password},'POST',pub);}
+   catch{throw new ApiError('Check your pharmacy, username and password.',401);}
+   if(session.user.id===undefined||session.user.email?.toLowerCase()!==claims[0].email||!session.user.email_confirmed_at)
+    throw new ApiError('Verify your email address before signing in.',403);
+   await rest('rpc/gp_claim_owner',{p_user:session.user.id,p_data:G.Commands.empty(claims[0].pharmacy_name,'pending')});
+   try{await api('/rest/v1/rpc/claim_pending_owner',{},'POST',pub,session.access_token);}
+   catch{/* Branch enrollment can be completed independently; pharmacy sign-in stays available. */}
+   ps=await rest('gp_pharmacies?slug=eq.'+encodeURIComponent(slug)+'&active=eq.true');
+   ms=ps.length?await rest('gp_memberships?pharmacy_id=eq.'+ps[0].id+'&username=eq.'+encodeURIComponent(username)+'&status=eq.Active'):[];
+   if(ms.length!==1)throw new ApiError('Pharmacy setup could not be completed.',503);
+ } else {
+   try{session=await api('/auth/v1/token?grant_type=password',{email:ms[0].email,password:b.password},'POST',pub);}
+   catch{throw new ApiError('Check your pharmacy, username and password.',401);}
+ }
  if(session.user.id!==ms[0].user_id)throw new ApiError('Account access denied.',403);
  return Response.json({session:{access_token:session.access_token,refresh_token:session.refresh_token,expires_at:Math.floor(Date.now()/1000)+session.expires_in},pharmacyId:ps[0].id},{headers});
  }
