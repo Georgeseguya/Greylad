@@ -1,0 +1,7 @@
+project_id = "greylad-pharmacy"
+[auth]
+enable_signup = false
+site_url = "https://greyladpharmacy.vercel.app"
+additional_redirect_urls = ["https://greyladpharmacy.vercel.app"]
+[functions.pharmacy-api]
+verify_jwt = false

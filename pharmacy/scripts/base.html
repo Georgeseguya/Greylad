@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<!-- Offline retail pharmacy v0.15. Account permissions and monthly report/email preparation added 2026-11-09. Updated 2026-11-09: N quick checkout and offline Space Grotesk.
+Quick checkout browser checks passed: N and Shift+N navigation, search focus,
+typing/dialog safeguards, basket preservation and repeated quick-button use.
+Embedded Space Grotesk rendered in the browser.
+Previous clinical verification: Clinical records added 2026-10-28.
+33 clinical automated checks passed, including legacy backup migration.
+Browser checked: patient registration, consultation and amendment, appointment,
+live medicine filtering, two-line prescription, recorded prescription view and reload persistence.
+No secure login/encrypted storage. Fictional patient records only. --><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Offline retail pharmacy catalogue, stock receiving and checkout prototype."><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'"><title>Retail pharmacy · Offline</title><style>:root{font-family:'Space Grotesk',system-ui,-apple-system,sans-serif;color:#282b30;background:#f5f6f7;font-size:14px}*{box-sizing:border-box}body{margin:0}button,input,select{font:inherit}button{cursor:pointer;border:1px solid #30353d;background:#30353d;color:white;padding:12px 17px;border-radius:7px;font-weight:600}button:hover{filter:brightness(1.15)}button:focus-visible,input:focus,select:focus{outline:3px solid #a4b8ce;outline-offset:2px}.secondary{background:white;color:#343942;border-color:#d9dce1}aside{width:245px;background:#24282e;color:#fff;position:fixed;inset:0 auto 0 0;padding:32px 22px}.logo{font-size:24px;display:flex;gap:10px;align-items:center;margin-bottom:58px}.logo span{font-size:16px;font-weight:650;letter-spacing:-.4px}small{font-size:10px;letter-spacing:1.5px;font-weight:750;color:#77808a}aside small{color:#929aa5;font-size:9px}nav{margin-top:18px;display:grid;gap:9px}nav button{border:0;background:transparent;text-align:left;color:#abb3be;padding:14px 12px}nav button.active{background:#3b4049;color:white}.aside-bottom{position:absolute;bottom:35px;font-size:10px;line-height:2;color:#9da5af}.aside-bottom span{font-size:12px;color:#ddd}main{margin-left:245px;padding:0 44px 30px;max-width:1700px}header{height:83px;border-bottom:1px solid #e0e3e7;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:#7b818a}header b{color:#454b54;font-weight:500}.badge{border:1px solid #d5d9df;background:#fff;border-radius:20px;padding:6px 12px;font-size:11px;color:#59616b}.intro{display:flex;align-items:center;justify-content:space-between;gap:20px;margin:39px 0 23px}h1{font-size:32px;letter-spacing:-1.3px;font-weight:600;margin:10px 0}p{color:#747b85;line-height:1.6}.intro p{margin:0;font-size:13px}.actions{display:flex;gap:10px}.notice{background:#edf0f3;border:1px solid #e0e4e9;border-radius:7px;padding:12px 15px;font-size:12px;color:#68717e}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin:25px 0}.stat{background:white;border:1px solid #e1e4e8;border-radius:9px;padding:23px}.stat label{display:block;font-size:12px;color:#6f7782}.stat strong{display:block;font-size:27px;font-weight:600;letter-spacing:-.8px;margin:12px 0 6px}.stat span{font-size:11px;color:#8b929a}.panel{border:1px solid #dfe3e8;border-radius:10px;background:white;overflow:hidden;min-height:330px}.toolbar{display:flex;padding:20px;gap:12px;border-bottom:1px solid #e8eaed}input,select{border:1px solid #d8dde3;background:white;border-radius:6px;padding:11px;color:#30363d;min-width:0}#search{flex:1}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;text-align:left;white-space:nowrap}th{font-size:10px;color:#848b95;background:#fafbfc;letter-spacing:.7px;font-weight:650;padding:16px 22px}td{padding:21px 22px;border-top:1px solid #eceef1;font-size:12px}td strong{font-size:13px;font-weight:650}td small{display:block;letter-spacing:0;font-size:11px;font-weight:400;margin-top:6px}.pill{display:inline-block;border-radius:5px;background:#f0f3f5;padding:5px 8px;font-size:10px;color:#5e6976}.pill.warn{background:#fff3dc;color:#886216}.pill.danger{background:#fbe8e8;color:#a14848}.link{background:transparent;border:0;color:#4f5967;padding:6px;font-size:12px}.empty{padding:65px;text-align:center;color:#7d8590}footer{display:flex;justify-content:space-between;gap:15px;margin-top:23px;font-size:10px;color:#8a919a}.note{font-size:11px;margin-top:25px}dialog{border:1px solid #d9dde2;border-radius:14px;padding:28px;width:650px;max-width:94vw;max-height:90vh;box-shadow:0 20px 80px #0003}dialog::backdrop{background:#20273288;backdrop-filter:blur(3px)}.modal-head{display:flex;justify-content:space-between;align-items:start}h2{font-size:24px;margin:8px 0 25px}.modal-head .close{background:none;color:#59616e;border:0;font-size:25px;padding:0 8px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:17px}.fields label{display:grid;gap:7px;font-size:12px;color:#5c6571}.fields input,.fields select{width:100%}.full{grid-column:1/-1}.modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:22px}.calculation{padding:15px;margin-top:20px;background:#eef1f4;border-radius:7px;font-size:13px;line-height:1.8}#error{color:#ae3939;font-size:12px}#toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#303943;color:white;padding:14px 25px;border-radius:8px;display:none;z-index:10}@media(max-width:1100px){aside{width:205px;padding:28px 15px}main{margin-left:205px;padding:0 24px}.intro{align-items:start;flex-direction:column}.stat{padding:16px}}@media(max-width:720px){aside{position:static;width:auto;padding:17px}.logo{margin:0;font-size:18px}.logo span{font-size:14px}aside small,.aside-bottom{display:none}nav{display:flex;margin-top:15px;gap:2px}nav button{font-size:11px;padding:10px 8px}main{margin:0;padding:0 16px}header{height:55px}.intro{margin-top:25px}h1{font-size:28px}.stats{grid-template-columns:1fr 1fr;gap:10px}.stat strong{font-size:23px}.toolbar{flex-wrap:wrap;padding:12px}#search{flex-basis:100%}#status{flex:1}.fields{grid-template-columns:1fr}.full{grid-column:auto}footer{flex-direction:column}.actions{width:100%}.actions button{flex:1;font-size:12px}}
+nav{gap:6px}nav button{font-size:13px}.section-body{padding:25px}.section-body h2{font-size:20px}.section-body h3{font-size:15px}.section-body p,.section-body li{line-height:1.7;color:#69727f;font-size:13px}.checkout-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:24px}.checkout-box{background:#f7f8fa;border:1px solid #e1e4e8;border-radius:9px;padding:20px}.checkout-box label{display:grid;gap:7px;font-size:12px;margin-bottom:15px;color:#626b77}.checkout-box select,.checkout-box input{width:100%}.checkout-box input[type=checkbox]{width:auto}.cart-row{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid #dce1e6;padding:14px 0}.cart-row small{display:block;letter-spacing:0;margin-top:5px;font-weight:400}.cart-row strong{font-size:13px}.total-line{display:flex;justify-content:space-between;font-size:22px;font-weight:650;padding:23px 0}.full-button{width:100%}.checkout-box .checkbox-label{display:flex;align-items:start;line-height:1.5}.receipt-head{text-align:center;border-bottom:1px dashed #bbb;padding-bottom:17px}.receipt-head p{font-size:12px;margin:3px}.receipt-summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px;font-size:13px}.receipt-summary b{text-align:right}#receipt{width:730px}#receipt table{white-space:normal}#receipt td,#receipt th{padding:12px 5px}#receipt h2{margin-bottom:10px}button:disabled{opacity:.45;cursor:not-allowed}.help-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}.help-grid .secondary{margin:8px 8px 8px 0}.notice.error{color:#922d2d;background:#fff0f0}.muted{color:#8b929a;font-size:12px}.summary-bar{padding:16px 22px;background:#f7f9fa;font-size:12px;color:#626d79;border-top:1px solid #e4e8eb}.brand-group{border-bottom:1px solid #e1e5e8;padding:18px 22px}.brand-group h3{font-size:14px;margin:0 0 15px}.brand-row{display:grid;grid-template-columns:130px 1fr 150px;gap:15px;align-items:center;margin:12px 0;font-size:12px}.bar{height:8px;border-radius:8px;background:#e9ecef;overflow:hidden}.bar span{display:block;height:100%;background:#596572;border-radius:8px}.right{text-align:right}.row-actions{display:flex;gap:10px;flex-wrap:wrap}#group-filter{max-width:100%;min-width:240px}#backup-summary{margin-bottom:15px}@media(max-width:900px){.checkout-grid,.help-grid{grid-template-columns:1fr}.brand-row{grid-template-columns:100px 1fr 95px}}@media(max-width:720px){nav{flex-wrap:wrap}nav button{font-size:11px}.section-body{padding:15px}.toolbar button{font-size:12px}.brand-row{grid-template-columns:95px 1fr 85px}.brand-group{padding:15px}}
+@media print{body>aside,body>main,body>dialog:not(#receipt),#toast,body>input{display:none!important}body{background:white;color:black}#receipt{display:block!important;position:static!important;inset:auto!important;margin:0!important;border:0!important;box-shadow:none!important;padding:10px!important;width:100%!important;max-width:none!important;max-height:none!important;overflow:visible!important}#receipt::backdrop{display:none}#receipt .modal-footer{display:none}#receipt table{font-size:11px}#receipt small{font-size:10px}body:not(.printing) #receipt{display:none!important}@page{size:auto;margin:14mm}}
+[hidden]{display:none!important}
+
+.sale-product+.sale-product{border-top:1px solid #e4e8eb;margin-top:10px;padding-top:10px}.compare-controls{display:flex;align-items:end;flex-wrap:wrap;gap:15px}.compare-controls label{display:grid;gap:8px;font-size:12px;color:#65707d}.brand-group table td{padding:16px 14px}.brand-group table th{padding:14px}.wrap-cell{white-space:normal;min-width:210px;max-width:300px}.fields textarea{font:inherit;border:1px solid #d8dde3;border-radius:6px;padding:11px;min-height:80px;resize:vertical;color:#30363d}.fields textarea:focus{outline:3px solid #a4b8ce}.sale-product small{white-space:normal;min-width:150px}.brand-group{padding:18px 10px}.brand-group h3{padding-left:12px}
+
+.sale-names{min-width:220px;max-width:310px;white-space:normal}.sale-names summary{cursor:pointer;font-size:11px;color:#59616b}.sale-names summary span{overflow-wrap:anywhere}.sale-names small{font-size:10px;letter-spacing:0;line-height:1.5}.sale-names details[open] summary{margin-bottom:12px}.receipt-items{font-size:12px;margin-top:12px}.receipt-items small{display:block;letter-spacing:0;font-weight:400;margin-top:5px}#profit-error,.loss-text{color:#a43c3c}#profit-totals .stat{padding:16px}#profit-totals .stat strong{font-size:21px;overflow-wrap:anywhere}#receipt td small{font-size:10px;line-height:1.5}nav{max-height:calc(100vh - 240px);overflow:auto}@media(max-width:720px){nav{max-height:none}}
+
+.po-builder{display:grid;gap:12px;background:#f7f8fa;padding:18px;border-radius:8px}.po-line{padding:14px 0;border-top:1px solid #e4e8eb;margin-top:10px}#proc-error{color:#a43c3c}#proc-dialog{width:760px}.po-builder .cart-row{white-space:normal}
+
+.select-search{width:100%;font-size:12px;margin:3px 0 6px}.edit-notice{background:#eef1f4;padding:13px;border-radius:6px;font-size:12px;line-height:1.6;color:#505b68}#edit-error{color:#a43c3c}input[readonly]{background:#eef0f2;color:#68717d}
+
+.combo{position:relative;width:100%;min-width:200px}.combo>input{width:100%;margin:0}.combo-options{position:absolute;top:100%;left:0;right:0;max-height:230px;overflow:auto;background:white;border:1px solid #bcc4cf;border-radius:6px;z-index:20;box-shadow:0 6px 20px #0002}.combo-options button{display:block;width:100%;border:0;border-radius:0;background:white;color:#30363d;text-align:left;font-weight:400;font-size:12px;white-space:normal;padding:12px}.combo-options button:hover,.combo-options button[aria-selected=true]{background:#e7ecf1}.combo-empty{padding:12px;font-size:12px;color:#68717d}#employee-error{color:#a43c3c}.panel{overflow:visible}aside .logo{margin-bottom:28px}nav{max-height:calc(100vh - 210px)}@media(max-width:720px){nav{max-height:none}}
+
+#block-error,#settings-error{color:#a43c3c}.logo span{overflow-wrap:anywhere}.stat strong{overflow-wrap:anywhere}#content .section-body .stat strong{font-size:21px}
+
+[hidden]{display:none!important}.invoice-controls{margin-top:16px}.invoice-controls button{width:100%}#invoice-error{color:#a43c3c}
+
+#closing-error,#cash-movement-error{color:#a43c3c}
+
+#stocktake-error,#stocktake-start-error{color:#a43c3c}.count-input{min-width:95px}#stocktake-counts td input:not(.count-input){min-width:190px}
+textarea{font:inherit;padding:11px;border:1px solid #d8dde3;border-radius:6px;width:100%;box-sizing:border-box}.clinical-text{white-space:pre-wrap;overflow-wrap:anywhere}.clinical-entry{padding:16px;margin:16px 0;border:1px solid #ddd;border-radius:8px}.clinical-entry blockquote{border-left:3px solid #8a98aa;padding-left:15px;margin:12px 0}#clinical-dialog{width:1000px}#clinical-error{color:#a43c3c}.clinical-picker select{width:100%}.clinical-picker input{width:100%}</style><style>/* Copyright 2020 The Space Grotesk Project Authors (https://github.com/floriankarsten/space-grotesk)
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+This license is copied below, and is also available with a FAQ at:
+http://scripts.sil.org/OFL
+
+
+-----------------------------------------------------------
+SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
+-----------------------------------------------------------
+
+PREAMBLE
+The goals of the Open Font License (OFL) are to stimulate worldwide
+development of collaborative font projects, to support the font creation
+efforts of academic and linguistic communities, and to provide a free and
+open framework in which fonts may be shared and improved in partnership
+with others.
+
+The OFL allows the licensed fonts to be used, studied, modified and
+redistributed freely as long as they are not sold by themselves. The
+fonts, including any derivative works, can be bundled, embedded, 
+redistributed and/or sold with any software provided that any reserved
+names are not used by derivative works. The fonts and derivatives,
+however, cannot be released under any other type of license. The
+requirement for fonts to remain under this license does not apply
+to any document created using the fonts or their derivatives.
+
+DEFINITIONS
+"Font Software" refers to the set of files released by the Copyright
+Holder(s) under this license and clearly marked as such. This may
+include source files, build scripts and documentation.
+
+"Reserved Font Name" refers to any names specified as such after the
+copyright statement(s).
+
+"Original Version" refers to the collection of Font Software components as
+distributed by the Copyright Holder(s).
+
+"Modified Version" refers to any derivative made by adding to, deleting,
+or substituting -- in part or in whole -- any of the components of the
+Original Version, by changing formats or by porting the Font Software to a
+new environment.
+
+"Author" refers to any designer, engineer, programmer, technical
+writer or other person who contributed to the Font Software.
+
+PERMISSION & CONDITIONS
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of the Font Software, to use, study, copy, merge, embed, modify,
+redistribute, and sell modified and unmodified copies of the Font
+Software, subject to the following conditions:
+
+1) Neither the Font Software nor any of its individual components,
+in Original or Modified Versions, may be sold by itself.
+
+2) Original or Modified Versions of the Font Software may be bundled,
+redistributed and/or sold with any software, provided that each copy
+contains the above copyright notice and this license. These can be
+included either as stand-alone text files, human-readable headers or
+in the appropriate machine-readable metadata fields within text or
+binary files as long as those fields can be easily viewed by the user.
+
+3) No Modified Version of the Font Software may use the Reserved Font
+Name(s) unless explicit written permission is granted by the corresponding
+Copyright Holder. This restriction only applies to the primary font name as
+presented to the users.
+
+4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font
+Software shall not be used to promote, endorse or advertise any
+Modified Version, except to acknowledge the contribution(s) of the
+Copyright Holder(s) and the Author(s) or with their explicit written
+permission.
+
+5) The Font Software, modified or unmodified, in part or in whole,
+must be distributed entirely under this license, and must not be
+distributed under any other license. The requirement for fonts to
+remain under this license does not apply to any document created
+using the Font Software.
+
+TERMINATION
+This license becomes null and void if any of the above conditions are
+not met.
+
+DISCLAIMER
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
+OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE
+COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
+DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
+OTHER DEALINGS IN THE FONT SOFTWARE.
+ */
+@font-face{font-family:'Space Grotesk';font-style:normal;font-weight:300 700;font-display:swap;src:url('/space-grotesk.ttf') format('truetype')}
+body,button,input,textarea,select,h1,h2,h3,h4,.brand{font-family:'Space Grotesk',Arial,sans-serif!important}
+</style><style>
+.header-tools{display:flex;align-items:center;gap:12px}
+#quick-checkout{font-size:12px;padding:8px 12px;display:inline-flex;align-items:center;gap:10px}
+kbd{font:inherit;font-size:11px;background:#eef0f3;color:#34363b;border:1px solid #cbd0d7;border-radius:4px;padding:2px 6px}
+@media(max-width:720px){.header-tools{gap:6px}.header-tools .badge{display:none}#quick-checkout{padding:7px 9px;font-size:11px}}
+@media print{.header-tools{display:none!important}}
+</style><style>
+[hidden]{display:none!important}.account-report{white-space:pre-wrap;overflow-wrap:anywhere;max-width:100%;font:12px/1.7 'Space Grotesk',sans-serif;max-height:500px;overflow:auto;background:#f5f6f7;padding:18px;border-radius:6px}#access-error{color:#a43c3c}.account-stamp{font-size:12px}#account-indicator{font-size:11px;padding:8px 10px;max-width:230px;text-overflow:ellipsis;white-space:nowrap;overflow:hidden}#content details{margin:14px 0}#content summary{cursor:pointer}.header-tools{flex-wrap:wrap;justify-content:flex-end}@media(max-width:720px){#account-indicator{max-width:140px;font-size:10px}header{height:auto;min-height:70px;padding:12px 0;gap:8px}.header-tools{gap:5px}#content td{padding:15px}}
+</style><style>.pack-row-error{grid-column:1/-1;color:#a43c3c;margin:0}.pack-row [aria-invalid=true]{border:2px solid #a43c3c}.pack-editor{padding:16px;border:1px solid #cbd0d5;border-radius:12px;background:#f5f6f8}.pack-row{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end;margin:12px 0}.pack-row button{margin-bottom:4px}.count-packs{min-width:260px}.count-part{display:flex;gap:5px;align-items:center;margin:5px 0}.count-part input{width:85px}.count-part select{min-width:120px}.pack-editor label{margin-top:10px}dialog{max-height:90vh;overflow-y:auto}@media(max-width:700px){.pack-row{grid-template-columns:1fr 1fr}}</style><style>/* Greylad Spine: pearl surfaces, graphite glass navigation. */
+:root{color:#34363b;background:#f5f6f4;--graphite:#34363b}
+html{scroll-padding-bottom:100px}body{overflow-wrap:break-word}body.modal-open{overflow:hidden}
+main,#content,.panel,.section-body,.checkout-grid>*,.help-grid>*,.fields>*,.stats>*{min-width:0}
+aside{display:flex;flex-direction:column;height:100vh;height:100dvh;background:linear-gradient(150deg,#f9faf8,#e9ecea);color:#34363b;border-right:1px solid #d7dbd8}
+aside .logo{flex-shrink:0;margin-bottom:24px}aside small{color:#6e7476}
+aside>nav{position:relative;flex:1;min-height:0;max-height:none;overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:6px;padding:3px 5px 12px 12px;scrollbar-width:thin}
+aside>nav:before{content:'';position:absolute;left:3px;top:4px;bottom:0;width:1px;background:#c8cdca}
+aside>nav button{flex-shrink:0;min-height:46px;border-radius:13px;color:#5a5e66;background:transparent;text-align:left;border:1px solid transparent}
+aside>nav button:hover{background:#ffffffb0;border-color:#fff;filter:none}
+aside>nav button.active,.mobile-dock button.active{color:#fff;background:linear-gradient(139deg,rgba(83,87,93,.93),rgba(44,46,50,.96));border:1px solid #ffffff54;box-shadow:inset 0 1px 1px #ffffff3b,0 9px 20px #34363b28;backdrop-filter:blur(22px) saturate(150%)}
+.aside-bottom{position:static;flex-shrink:0;padding-top:14px;color:#6e7476}.aside-bottom span{color:#5a5e66}
+header{background:#ffffff6e;backdrop-filter:blur(12px)}button{background:#34363b;border-color:#34363b}.secondary{background:#fff;color:#34363b;border-color:#d9ddda}
+.panel,.stat{border-color:#dce0dc;box-shadow:0 3px 14px #34363b04}.notice,.checkout-box,.pack-editor{background:#f0f2f0}
+.table-wrap{max-width:100%;overflow:auto;overscroll-behavior-x:contain;scrollbar-width:thin}.cart-row>div{min-width:0;overflow-wrap:anywhere}
+.fields{grid-template-columns:repeat(2,minmax(0,1fr))}.combo{min-width:0}.combo-options{overscroll-behavior:contain}.combo-options button{touch-action:manipulation}
+dialog{max-width:calc(100vw - 24px);max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px);overflow:auto;overscroll-behavior:contain;scroll-padding-top:100px;scroll-padding-bottom:90px;padding:22px;scrollbar-gutter:stable}
+dialog .modal-head{position:sticky;top:-22px;background:#fff;z-index:25;padding:16px 0 8px;margin-top:-16px;border-bottom:1px solid #e8eae7;margin-bottom:20px;gap:12px}
+dialog .modal-head h2{margin:5px 0 12px}dialog .modal-footer{position:sticky;bottom:-22px;background:#fff;z-index:25;padding:15px 0;margin-bottom:-15px;border-top:1px solid #e8eae7;flex-wrap:wrap}
+dialog .combo-options{position:static;margin-top:4px;max-height:200px;box-shadow:none}
+.pack-row{grid-template-columns:repeat(3,minmax(0,1fr)) auto}.pack-row label{min-width:0}.pack-row input{min-width:0;width:100%}
+#stocktake-counts td .count-part input{min-width:65px;width:85px}.count-part{flex-wrap:wrap}
+.maker-signature{display:flex;align-items:center;gap:10px;margin:10px 25px 25px;padding-top:20px;border-top:1px solid #e2e5e1;color:#6e7476;font-size:12px}.maker-signature svg{width:38px;height:38px}
+.mobile-dock{display:none}#navigation-dialog{width:520px}#navigation-items{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}#navigation-items button{text-align:left;background:#f0f2f0;color:#34363b;border-color:#d9ddda;font-size:12px}#navigation-items button.active{background:#34363b;color:#fff}
+@media(max-width:720px){aside{position:static;height:auto;padding:16px}aside .logo{margin:0}aside>nav,aside>small,.aside-bottom{display:none}main{padding:0 14px calc(105px + env(safe-area-inset-bottom))}header{flex-wrap:wrap}.header-tools{max-width:100%}.mobile-dock{position:fixed;display:flex;bottom:max(12px,env(safe-area-inset-bottom));left:12px;right:12px;z-index:40;gap:3px;margin:0;padding:7px;border:1px solid #fff;border-radius:24px;background:#f5f6f4ed;box-shadow:0 8px 35px #34363b26;backdrop-filter:blur(28px);max-height:none;overflow:visible}.mobile-dock button{flex:1;min-width:0;min-height:48px;font-size:10px;text-align:center;padding:8px 3px;border-radius:16px;color:#5a5e66;background:transparent;border:1px solid transparent}.fields{grid-template-columns:minmax(0,1fr)}.pack-row{grid-template-columns:repeat(2,minmax(0,1fr))}.actions{flex-wrap:wrap}.toolbar>*{max-width:100%}.combo{width:100%}#group-filter{min-width:0}.empty{padding:35px 15px}.brand-row{grid-template-columns:85px minmax(0,1fr) 80px}#toast{bottom:100px;max-width:90vw;width:max-content}.stat strong{font-size:21px}}
+@media(max-width:400px){.pack-row{grid-template-columns:minmax(0,1fr)}dialog{padding:16px}dialog .modal-head{top:-16px}dialog .modal-footer{bottom:-16px}.stats{gap:7px}.stat{padding:12px}.header-tools{justify-content:flex-start}}
+@supports not (backdrop-filter:blur(1px)){.mobile-dock,header{background:#f5f6f4}}
+@media print{body.modal-open{overflow:visible}.mobile-dock,#navigation-dialog{display:none!important}#receipt{scrollbar-gutter:auto}.table-wrap{overflow:visible;max-width:none}}
+
+.receipt-print-controls{padding:0 0 15px;margin-bottom:20px;border-bottom:1px solid #ddd}.receipt-print-controls label,.receipt-settings label{display:block;font-size:12px;margin-bottom:8px}.receipt-print-controls p,.receipt-settings p{font-size:12px;line-height:1.5}.receipt-print-controls select,.receipt-settings select{max-width:100%}
+#receipt[data-paper="80"]{--roll-width:80mm;--roll-inset:4mm}
+#receipt[data-paper="58"]{--roll-width:58mm;--roll-inset:5mm}
+#receipt:not([data-paper="a4"]) #receipt-content{box-sizing:border-box;width:var(--roll-width);max-width:100%;padding:3mm var(--roll-inset);margin:0 auto;background:#fff;color:#000;font-size:11px;line-height:1.4;overflow-wrap:anywhere}
+#receipt:not([data-paper="a4"]) #receipt-content *{color:#000;letter-spacing:normal;min-width:0}
+#receipt:not([data-paper="a4"]) .receipt-head h2{font-size:17px;margin:8px 0}
+#receipt:not([data-paper="a4"]) .receipt-head>small{font-size:14px;font-weight:700;display:block}
+#receipt:not([data-paper="a4"]) .receipt-head p{font-size:11px}
+#receipt:not([data-paper="a4"]) .receipt-head{padding-bottom:10px}
+#receipt:not([data-paper="a4"]) .table-wrap{overflow:visible}
+#receipt:not([data-paper="a4"]) table,#receipt:not([data-paper="a4"]) tbody{display:block;width:100%;white-space:normal}
+#receipt:not([data-paper="a4"]) thead{display:none}
+#receipt:not([data-paper="a4"]) tbody tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:3mm;row-gap:7px;border-bottom:1px dashed #777;padding:12px 0;break-inside:avoid;page-break-inside:avoid}
+#receipt:not([data-paper="a4"]) td{display:block;padding:0;border:0;font-size:11px;white-space:normal;overflow-wrap:anywhere}
+#receipt:not([data-paper="a4"]) td:first-child{grid-column:1/-1}
+#receipt:not([data-paper="a4"]) td:not(:first-child):before{content:attr(data-receipt-label);display:block;font-size:10px;font-weight:600;margin-bottom:2px}
+#receipt:not([data-paper="a4"]) td strong{font-size:11px}
+#receipt:not([data-paper="a4"]) td small{font-size:11px;line-height:1.4;margin-top:3px}
+#receipt:not([data-paper="a4"]) td:last-child{font-weight:700}
+#receipt:not([data-paper="a4"]) .receipt-summary{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;font-size:12px;margin-top:14px;break-inside:avoid}
+#receipt:not([data-paper="a4"]) .note{font-size:10px;margin-top:14px;line-height:1.4}
+@media print{
+ .receipt-print-controls{display:none!important}
+ #receipt[data-paper="80"],#receipt[data-paper="58"]{box-sizing:border-box;width:var(--roll-width)!important;max-width:none!important;padding:0!important;border:0!important;overflow:visible!important;scrollbar-gutter:auto!important}
+ #receipt:not([data-paper="a4"]) #receipt-content{margin:0!important;max-width:none!important;height:auto!important;overflow:visible!important}
+ #receipt:not([data-paper="a4"]) .table-wrap{overflow:visible!important}
+ #receipt[data-paper="a4"]{padding:0!important}
+ #receipt[data-paper="a4"] #receipt-content{width:auto;padding:0}
+ #receipt[data-paper="a4"] thead{display:table-header-group}
+ #receipt[data-paper="a4"] tr{break-inside:avoid}
+}
+
+.workspace-link{display:inline-flex;align-items:center;padding:8px 12px;border:1px solid #d9ddda;border-radius:8px;text-decoration:none;font-size:12px;white-space:nowrap}.demo-banner{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 16px;border:1px solid #c5cbc6;border-radius:12px;background:#e8ede9;margin-top:14px}.demo-banner span{display:block;font-size:12px;margin-top:4px}.demo-task-tip{font-size:12px;color:#505854;padding:10px 14px;background:#eef1ee;border-radius:8px}.demo-fill{font-size:12px;margin:0 0 16px;padding:8px 12px}.pack-starter{display:flex;align-items:end;gap:12px;margin-bottom:20px}.pack-starter label{flex:1}.pack-starter button{flex-shrink:0}.pack-help,.entry-help{font-size:12px;margin:14px 0;color:#646c67}.entry-help>summary,.pack-help>summary{cursor:pointer;padding:5px 0}.pack-preview{line-height:1.8}.pack-row{padding:12px;border:1px solid #dce1dc;border-radius:9px;background:#fff}.table-wrap:focus-visible{outline:2px solid #6f7770;outline-offset:2px}
+@media(max-width:720px){.pack-starter{display:block}.pack-starter button{margin-top:10px}.demo-banner{align-items:start}.demo-banner button{font-size:11px;padding:8px}.demo-banner span{line-height:1.5}}
+@media print{.demo-banner,.demo-task-tip,.demo-fill,.workspace-link{display:none!important}}
+
+/* Keep every field visible without making tables wider than the workspace. */
+main{max-width:none;padding-left:24px;padding-right:24px}.intro{margin:22px 0 18px}h1{font-size:28px}.stats{gap:12px;margin:18px 0}.stat{padding:16px}.stat strong{margin:8px 0;font-size:24px}.toolbar{padding:14px}.table-wrap{width:100%;max-width:100%}#content table{table-layout:fixed;white-space:normal}#content td,#content th{padding:12px 10px;white-space:normal;overflow-wrap:anywhere}#content td strong{font-size:12px}#content td small{line-height:1.45}#content .wrap-cell{min-width:0;max-width:none}#content .sale-names{min-width:0}#content .link{white-space:normal}#content td button{max-width:100%}#content .catalogue-table th:nth-child(1){width:29%}#content .catalogue-table th:nth-child(2){width:16%}#content .catalogue-table th:nth-child(3){width:12%}#content .catalogue-table th:nth-child(4){width:14%}#content .catalogue-table th:nth-child(5){width:13%}#content .catalogue-table th:nth-child(6){width:16%}
+#content .count-packs{min-width:0}#content #stocktake-counts td input:not(.count-input){min-width:0;max-width:100%}.count-part select{min-width:0;max-width:100%}
+dialog{width:940px;padding:20px}dialog .fields{gap:12px 18px}dialog h2{font-size:21px}.pack-editor{padding:12px}.pack-editor h3{margin:4px 0 8px}.pack-editor label{margin-top:0}.pack-row{margin:8px 0;padding:9px}.pack-starter{margin-bottom:12px}.pack-preview{margin:10px 0}.pack-help{margin:8px 0}.pack-intro{font-size:12px;margin:6px 0 12px}.pack-row input,.pack-row select{padding:9px}.pack-row-error{font-size:12px}#fields>.note{margin:0;font-size:11px}#form-kicker{display:none}.fields input,.fields select{padding:10px}#content .section-body{padding:18px}
+@media(min-width:1000px){#dialog:has(.pack-editor) .fields{grid-template-columns:repeat(3,minmax(0,1fr))}#dialog:has(.pack-editor){width:1060px}}
+@media(max-width:1279px){#content table.wide-table thead{display:none}#content table.wide-table,#content table.wide-table tbody{display:block}#content table.wide-table tbody{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:12px}#content table.wide-table tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border:1px solid #dce0dc;border-radius:10px;padding:8px;align-content:start}#content table.wide-table td{border:0;padding:8px;min-width:0}#content table.wide-table td:before{content:attr(data-label);display:block;font-size:9px;color:#69716c;font-weight:600;margin-bottom:5px}#content table.wide-table td:first-child{grid-column:1/-1}}
+@media(max-width:800px){#content table thead{display:none}#content table,#content table tbody{display:block;width:100%}#content table tbody,#content table.wide-table tbody{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;padding:10px}#content table tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border:1px solid #dce0dc;border-radius:10px;padding:6px}#content table td{border:0;min-width:0;padding:8px}#content table td:before{content:attr(data-label);display:block;font-size:9px;color:#69716c;font-weight:600;margin-bottom:5px}#content table td:first-child{grid-column:1/-1}main{padding-left:12px;padding-right:12px}dialog .fields{grid-template-columns:minmax(0,1fr)}#content #stocktake-counts td:has(.count-packs){grid-column:1/-1}}
+@media print{dialog{width:auto}.pack-intro{display:none}}
+/* Compact spacing verified against the live desktop view. */
+header{height:58px}.intro{margin:14px 0}.intro>div>small{display:none}h1{margin:4px 0;font-size:26px}.demo-banner{padding:8px 12px;margin-top:8px}.demo-banner span{font-size:11px}.demo-task-tip{margin:8px 0;padding:7px 12px}body:has(.demo-banner) #notice:not(.error){display:none}.stats{margin:12px 0}.stat{padding:12px}.stat strong{margin:6px 0;font-size:22px}aside{padding:20px 15px}aside .logo{margin-bottom:16px}aside>nav{gap:2px;margin-top:12px}aside>nav button{min-height:29px;padding:6px 9px;font-size:12px}.aside-bottom{padding-top:8px}
+dialog .account-stamp{padding:6px 10px;margin:0 0 8px;font-size:10px}dialog .modal-head{padding:10px 0 4px;margin-bottom:12px}dialog .modal-head h2{margin:4px 0 10px}dialog .demo-fill{padding:6px 10px;margin-bottom:10px}.pack-editor{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px 14px}.pack-editor>h3,.pack-editor>.pack-starter,.pack-editor>.pack-rows,.pack-editor>.pack-preview,.pack-editor>.pack-help{grid-column:1/-1}.pack-editor>.pack-intro{display:none}.pack-editor>.pack-add{grid-column:1;width:max-content;max-width:100%;align-self:end}.pack-editor>label{grid-column:2}.pack-row{padding:7px;margin:5px 0}.pack-help{margin:0}.pack-preview{margin:3px 0}.pack-starter{margin-bottom:0}dialog .modal-footer{margin-top:12px;padding:10px 0}
+@media(max-width:720px){header{height:auto}.pack-editor{grid-template-columns:minmax(0,1fr)}.pack-editor>label,.pack-editor>.pack-add{grid-column:1}.demo-banner span{font-size:11px}}
+</style></head><body><aside><div class="logo">◧ <span>Pharmacy workspace</span></div><small>RETAIL OPERATIONS</small><nav><button data-tab="catalogue" class="active">▦ &nbsp; Medicines</button><button data-tab="shelves">▥ &nbsp; Shelf locations</button><button data-tab="alerts">! &nbsp; Stock alerts</button><button data-tab="procurement">▧ &nbsp; Suppliers &amp; orders</button><button data-tab="batches">▤ &nbsp; Batch inventory</button><button data-tab="checkout">＋ &nbsp; Checkout</button><button data-tab="invoices">▧ &nbsp; Invoicing</button><button data-tab="losses">− &nbsp; Stock loss</button><button data-tab="movements">⇄ &nbsp; Stock movements</button><button data-tab="closing">▣ &nbsp; Daily closing</button><button data-tab="sales">↗ &nbsp; Sales & receipts</button><button data-tab="profit">◩ &nbsp; Drug profit &amp; loss</button><button data-tab="brands">◫ &nbsp; Brand comparison</button><button data-tab="blocks">⊘ &nbsp; Blocked list</button><button data-tab="stocktake">☷ &nbsp; Stocktake</button><button data-tab="adjustments">≋ &nbsp; Stock adjustments</button><button data-tab="patients">♧ &nbsp; Patients</button><button data-tab="appointments">▦ &nbsp; Appointments</button><button data-tab="prescriptions">▤ &nbsp; Prescriptions</button><button data-tab="accounts">♙ &nbsp; Accounts &amp; access</button><button data-tab="employees">♙ &nbsp; Employees</button><button data-tab="history">↺ &nbsp; Edit history</button><button data-tab="backup">⇩ &nbsp; Settings</button></nav><div class="aside-bottom">OFFLINE · VERSION 0.20<br><span>Single-device prototype</span></div></aside><main><header><span>Workspace / <b id="breadcrumb">Medicines</b></span><div class="header-tools"><button type="button" class="secondary" id="account-indicator">Account setup</button><button type="button" class="secondary" id="quick-checkout" aria-keyshortcuts="N" title="Open Checkout (N)">Quick checkout <kbd>N</kbd></button><span class="badge">Offline · UGX</span></div></header><section class="intro"><div><small>MEDICINES & STOCK</small><h1 id="heading">Medicine catalogue</h1><p id="subtitle">Manage medicines, pack sizes and stock.</p></div><div class="actions"><button class="secondary" id="receive">＋ Receive stock</button><button id="add">＋ Add medicine</button></div></section><div class="notice" id="notice">Offline prototype · Records stay in this browser. Export a backup before replacing or moving this file. Use one tab at a time.</div><section class="stats" id="stats"></section><section class="panel"><div class="toolbar" id="toolbar"><input id="search" aria-label="Search records" placeholder="Search this list…"><select id="status" aria-label="Stock filter"><option value="all">All stock</option><option value="low">Low stock</option><option value="expiry">Expiring within 90 days</option></select><button class="secondary" id="export">Export inventory CSV</button></div><div id="content"></div></section><footer><span>Brand-level records · Mandatory brand names</span><span>Developed by George Seguya</span></footer></main><dialog id="dialog"><form id="form"><div class="modal-head"><div><small id="form-kicker"></small><h2 id="form-title"></h2></div><button type="button" class="close" aria-label="Close form">×</button></div><div id="fields" class="fields"></div><div id="calculation" class="calculation" hidden></div><p id="error" role="alert"></p><div class="modal-footer"><button type="button" class="secondary close">Cancel</button><button type="submit">Save</button></div></form></dialog><dialog id="invoice-dialog"><form id="invoice-form"><div class="modal-head"><h2 id="invoice-title">Invoice</h2><button id="invoice-close" type="button" aria-label="Close invoice form">×</button></div><div id="invoice-fields" class="fields"></div><p id="invoice-error" role="alert"></p><div class="modal-footer"><button type="submit">Save invoice action</button></div></form></dialog><dialog id="block-dialog"><form id="block-form"><div class="modal-head"><h2>Stock / supplier control</h2><button id="block-close" type="button" class="close" aria-label="Close block form">×</button></div><div id="block-fields" class="fields"></div><p id="block-error" role="alert"></p><div class="modal-footer"><button type="button" id="block-cancel" class="secondary">Cancel</button><button type="submit">Record action</button></div></form></dialog><dialog id="employee-dialog"><form id="employee-form"><div class="modal-head"><h2 id="employee-title">Employee details</h2><button id="employee-close" type="button" class="close" aria-label="Close employee form">×</button></div><div id="employee-fields" class="fields"></div><p id="employee-error" role="alert"></p><div class="modal-footer"><button id="employee-cancel" type="button" class="secondary">Cancel</button><button type="submit">Save employee</button></div></form></dialog><dialog id="edit-dialog"><form id="edit-form"><div class="modal-head"><h2 id="edit-title">Correct record</h2><button id="edit-close" type="button" class="close" aria-label="Close correction">×</button></div><div id="edit-fields" class="fields"></div><p id="edit-error" role="alert"></p><div class="modal-footer"><button id="edit-cancel" type="button" class="secondary">Cancel</button><button type="submit">Save correction</button></div></form></dialog><dialog id="proc-dialog"><form id="proc-form"><div class="modal-head"><h2 id="proc-title"></h2><button id="proc-close" type="button" class="close" aria-label="Close procurement form">×</button></div><div id="proc-fields" class="fields"></div><p id="proc-error" role="alert"></p><div class="modal-footer"><button id="proc-cancel" type="button" class="secondary">Cancel</button><button type="submit">Save</button></div></form></dialog><dialog id="adjust-dialog"><form id="adjust-form"><div class="modal-head"><div><small>TRACEABLE STOCK MOVEMENTS</small><h2>Record stock adjustment</h2></div><button id="adjust-close" type="button" class="close" aria-label="Close adjustment">×</button></div><div id="adjust-fields" class="fields"></div><div id="adjust-preview" class="calculation"></div><p id="adjust-error" role="alert" style="color:#a43c3c"></p><div class="modal-footer"><button type="button" id="adjust-cancel" class="secondary">Cancel</button><button type="submit">Record adjustment</button></div></form></dialog><dialog id="receipt"><div id="receipt-content"></div><div class="modal-footer"><button id="close-receipt" class="secondary">Close</button><button id="print-receipt">Print document</button></div></dialog><div id="toast" role="status"></div><input type="file" id="restore-file" accept=".json,application/json" hidden><datalist id="pack-name-options"><option>Blister</option><option>Bottle</option><option>Mini carton</option><option>Carton</option><option>Box</option><option>Shipper</option><option>Strip</option><option>Sachet</option></datalist></body></html>

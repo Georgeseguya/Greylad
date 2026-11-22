@@ -1,0 +1,7 @@
+node_modules/
+.env*
+!.env.example
+.vercel/
+coverage/
+scripts/generated-ui.js
+public/workspace.html

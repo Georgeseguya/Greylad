@@ -1,0 +1,25 @@
+{
+  "name": "pharmacy-live",
+  "version": "1.0.0",
+  "description": "Greylad Pharmacy production application",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "build": "node scripts/build.cjs",
+    "test": "node --test tests/*.test.cjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@electric-sql/pglite": "0.3.14",
+    "acorn": "8.15.0",
+    "acorn-walk": "8.3.4",
+    "escodegen": "2.1.0",
+    "jsdom": "26.1.0"
+  },
+  "private": true
+}
