@@ -1,0 +1,113 @@
+/* Greylad Pharmacy demo branch testing. All records remain in browser storage. */
+(function(){
+'use strict';
+const dirKey='gp-demo-directory-v1',activeKey='gp-demo-active-branch-v1',prefix='gp-demo-branch-stock-';
+const main={id:'MAIN',code:'MAIN',name:'Main Branch'};
+let directory;
+try{directory=JSON.parse(localStorage.getItem(dirKey)||'null')}catch{}
+if(!directory||!Array.isArray(directory.branches))directory={branches:[main],staff:[]};
+if(!Array.isArray(directory.staff))directory.staff=[];
+if(!directory.branches.some(b=>b.id==='MAIN'))directory.branches.unshift(main);
+const originalMainKey=key;
+let active=sessionStorage.getItem(activeKey)||'MAIN';
+if(active!=='all'&&!directory.branches.some(b=>b.id===active))active='MAIN';
+const branch=id=>directory.branches.find(x=>x.id===id),safe=esc;
+const moneyDemo=n=>'UGX '+Number(n||0).toLocaleString('en-UG');
+const storeDir=()=>localStorage.setItem(dirKey,JSON.stringify(directory));
+function stockKey(id){return id==='MAIN'?originalMainKey:prefix+id;}
+function emptyState(){const a=structuredClone(state);Object.keys(a).forEach(k=>{if(Array.isArray(a[k]))a[k]=[];});a.revision=0;return a;}
+function readState(id){try{return JSON.parse(localStorage.getItem(stockKey(id))||'null')||emptyState();}catch{return emptyState();}}
+function leftUnits(d){const day=today();return (d.batches||[]).filter(b=>!P.expired(b,day)&&!['quarantined','writtenoff'].includes(b.status)).reduce((n,b)=>n+Math.max(0,P.remaining(b,d.sales||[],d.adjustments||[])),0);}
+function stockValue(d){const day=today();return (d.batches||[]).filter(b=>!P.expired(b,day)&&!['quarantined','writtenoff'].includes(b.status)).reduce((n,b)=>n+Math.max(0,P.remaining(b,d.sales||[],d.adjustments||[]))*Number(b.unitCost||0),0);}
+const originalPersist=persist;
+persist=function(next,expected=state.revision){
+ if(active==='all')throw Error('Select a branch first.');
+ if(active==='MAIN')return originalPersist(next,expected);
+ const latest=readState(active);if((latest.revision||0)!==expected)throw Error('This branch has changed. Refresh first.');
+ next.revision=expected+1;localStorage.setItem(stockKey(active),JSON.stringify(next));state=next;
+};
+const originalRender=render;
+function demoOverview(){
+ const branches=active==='all'?directory.branches:[branch(active)];
+ const items=branches.map(b=>{const d=b.id===active&&active!=='all'?state:readState(b.id);return {b,d,units:leftUnits(d),value:stockValue(d),sales:(d.sales||[]).reduce((n,x)=>n+Number(x.total||0),0)};});
+ const sum=k=>items.reduce((n,x)=>n+x[k],0);
+ const metrics=[['Branches',items.length],['Saleable units',sum('units').toLocaleString()],['Stock value',moneyDemo(sum('value'))],['Recorded sales',moneyDemo(sum('sales'))]];
+ const grid='<div class="demo-branch-grid">'+metrics.map(x=>'<section class="demo-branch-card">'+safe(x[0])+'<b>'+safe(x[1])+'</b></section>').join('')+'</div>';
+ const summary='<h3>Branches</h3><div class="demo-table"><table><thead><tr><th>Branch</th><th>Medicines</th><th>Saleable units</th><th>Stock value</th><th>Sales</th></tr></thead><tbody>'+items.map(x=>'<tr><td>'+safe(x.b.name)+'</td><td>'+(x.d.medicines||[]).length+'</td><td>'+x.units+'</td><td>'+moneyDemo(x.value)+'</td><td>'+moneyDemo(x.sales)+'</td></tr>').join('')+'</tbody></table></div>';
+ const stock='<h3>Inventory</h3><div class="demo-table"><table><thead><tr><th>Branch</th><th>Brand</th><th>Generic / strength</th><th>Available</th></tr></thead><tbody>'+items.flatMap(x=>(x.d.medicines||[]).map(m=>'<tr><td>'+safe(x.b.name)+'</td><td>'+safe(m.brand)+'</td><td>'+safe(m.generic)+' '+safe(m.strength)+'</td><td>'+P.available(m,x.d.batches||[],today(),x.d.sales||[],x.d.adjustments||[])+' '+safe(m.unit)+'</td></tr>')).join('')+'</tbody></table></div>';
+ return grid+summary+stock;
+}
+render=function(){if(tab!=='overview')return originalRender();
+ tab='catalogue';originalRender();tab='overview';
+ document.querySelectorAll('aside nav [data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab==='overview'));
+ $('#breadcrumb').textContent='Overview';$('#heading').textContent='Overview';$('#subtitle').textContent='';
+ $('.intro .actions').hidden=true;$('.intro small').hidden=true;$('#notice').hidden=true;
+ $('#stats').hidden=true;$('#toolbar').hidden=true;$('#content').innerHTML=demoOverview();
+};
+const oldGo=go;
+go=function(n){if(active==='all'&&n!=='overview')return;if(n!=='overview')return oldGo(n);oldGo('catalogue');tab='overview';render();};
+const controls='<label class="demo-branch-label">Branch <select id="demo-branch-switch"></select></label><button type="button" class="secondary" id="demo-manage-branches">Manage branches</button>';
+document.querySelector('header .header-tools').insertAdjacentHTML('afterbegin',controls);
+document.querySelector('aside nav').insertAdjacentHTML('afterbegin','<button type="button" data-tab="overview">◫ &nbsp; Overview</button>');
+document.querySelector('aside nav [data-tab="overview"]').onclick=()=>go('overview');
+const css=[
+'.demo-branch-label{display:flex;align-items:center;gap:6px;font-size:12px}',
+'#demo-branch-switch{max-width:180px;padding:8px;border:1px solid #cbd0d3;border-radius:8px}',
+'.demo-branch-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;margin:10px 0 23px}',
+'.demo-branch-card{background:white;border:1px solid #e2e4e5;border-radius:12px;padding:16px;font-size:12px}',
+'.demo-branch-card b{display:block;margin-top:8px;font-size:22px}',
+'.demo-table{overflow-x:auto;margin:12px 0 20px}',
+'.demo-table table{width:100%;border-collapse:collapse;background:white;font-size:12px}',
+'.demo-table td,.demo-table th{border-bottom:1px solid #e2e3e4;padding:10px;text-align:left}',
+'#demo-branch-dialog{border:1px solid #d8d9dd;border-radius:12px;max-width:480px;width:calc(100vw - 40px);padding:22px}',
+'#demo-branch-dialog form{display:grid;gap:10px;margin:10px 0 22px}',
+'#demo-branch-dialog label{display:grid;gap:4px;font-size:12px}',
+'#demo-branch-dialog input,#demo-branch-dialog select{padding:8px;border:1px solid #d0d2d5;border-radius:6px}',
+'#demo-branch-dialog table{border-collapse:collapse;width:100%}',
+'#demo-branch-dialog td{border-bottom:1px solid #ddd;padding:7px;font-size:12px}',
+'@media(max-width:700px){.demo-branch-label{width:100%;justify-content:space-between}}'
+].join('\n');
+const style=document.createElement('style');style.textContent=css;document.head.append(style);
+document.body.insertAdjacentHTML('beforeend',
+'<dialog id="demo-branch-dialog"><div style="display:flex;align-items:center;justify-content:space-between"><h2>Branches</h2><button id="demo-branch-close">Close</button></div>'+
+'<form id="demo-branch-add"><h3>New branch</h3><label>Branch name<input name="name" maxlength="100" required></label><label>Code<input name="code" maxlength="20" required></label><label>Address<input name="address" maxlength="300"></label><button>Add branch</button></form>'+
+'<form id="demo-staff-add"><h3>Employee assignment</h3><label>Employee<input name="name" required maxlength="100"></label><label>Email<input name="email" type="email" required></label><label>Branch<select name="branch" id="demo-staff-options"></select></label><label>Role<select name="role"><option>Manager</option><option>Pharmacist</option><option>Cashier</option><option>Stock clerk</option><option>Viewer</option><option>Stock manager</option></select></label><button>Assign employee</button></form><div id="demo-staff-list"></div></dialog>');
+function updateChoices(){
+ $('#demo-branch-switch').innerHTML='<option value="all">All branches</option>'+directory.branches.map(b=>'<option value="'+safe(b.id)+'">'+safe(b.name)+' ('+safe(b.code)+')</option>').join('');
+ $('#demo-branch-switch').value=active;
+ $('#demo-staff-options').innerHTML=directory.branches.map(b=>'<option value="'+safe(b.id)+'">'+safe(b.name)+'</option>').join('');
+ document.querySelectorAll('aside nav [data-tab]').forEach(b=>b.disabled=active==='all'&&b.dataset.tab!=='overview');
+ $('#quick-checkout').disabled=active==='all';
+}
+function switchBranch(id){
+ if(id===active)return;
+ if(cart.length&&!confirm('Switch branches and clear your basket?')){$('#demo-branch-switch').value=active;return;}
+ cart=[];saleToken=uuid();
+ if(id!=='all'){const data=readState(id);if(!localStorage.getItem(stockKey(id)))localStorage.setItem(stockKey(id),JSON.stringify(data));
+  state={...P.validateBackup({app:'retail-pharmacy-offline',version:13,data}),revision:data.revision||0};window.DEMO_BRANCH=branch(id);
+ }
+ active=id;sessionStorage.setItem(activeKey,id);updateChoices();go('overview');
+}
+$('#demo-branch-switch').onchange=e=>switchBranch(e.target.value);
+$('#demo-manage-branches').onclick=()=>{$('#demo-branch-dialog').showModal();renderStaff();};
+$('#demo-branch-close').onclick=()=>$('#demo-branch-dialog').close();
+$('#demo-branch-add').onsubmit=e=>{
+ e.preventDefault();const d=Object.fromEntries(new FormData(e.target));
+ const code=d.code.trim().toUpperCase();
+ if(!/^[A-Z0-9-]{2,20}$/.test(code)||directory.branches.some(b=>b.code===code)){alert('Choose a unique branch code.');return;}
+ const id=uuid();directory.branches.push({id,name:d.name.trim(),code,address:d.address.trim()});storeDir();updateChoices();switchBranch(id);e.target.reset();$('#demo-branch-dialog').close();
+};
+$('#demo-staff-add').onsubmit=e=>{
+ e.preventDefault();const d=Object.fromEntries(new FormData(e.target));
+ directory.staff.push({...d,id:uuid()});storeDir();e.target.reset();renderStaff();
+};
+function renderStaff(){
+ $('#demo-staff-list').innerHTML='<table><tbody>'+directory.staff.map((x,i)=>'<tr><td>'+safe(x.name)+'<small>'+safe(x.email)+'</small></td><td>'+safe(branch(x.branch)?.name)+'</td><td>'+safe(x.role)+'</td><td><button data-demostaff="'+i+'">Remove</button></td></tr>').join('')+'</tbody></table>';
+ document.querySelectorAll('[data-demostaff]').forEach(b=>b.onclick=()=>{directory.staff.splice(Number(b.dataset.demostaff),1);storeDir();renderStaff();});
+}
+const oldReceipt=showReceipt;
+showReceipt=function(id){const result=oldReceipt(id),b=branch(active)||main;const p=document.createElement('p');p.style.cssText='font-size:12px;font-weight:600;margin:7px 0';p.textContent='Branch: '+b.name+' ('+b.code+')';($('#receipt-content').querySelector('.receipt-head')||$('#receipt-content')).prepend(p);return result;};
+const oldInvoice=showInvoice;
+showInvoice=function(id){const result=oldInvoice(id),b=branch(active)||main;const p=document.createElement('p');p.style.cssText='font-size:12px;font-weight:600;margin:7px 0';p.textContent='Branch: '+b.name+' ('+b.code+')';$('#receipt-content').prepend(p);return result;};
+if(active!=='MAIN'){const desired=active;active='MAIN';switchBranch(desired);}else{window.DEMO_BRANCH=main;updateChoices();go('overview');}
+})();
