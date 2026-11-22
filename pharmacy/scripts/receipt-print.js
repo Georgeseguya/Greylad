@@ -23,8 +23,18 @@
   }
   apply(type==='sale'?preferred:'a4');$('#receipt').scrollTop=0;
  }
- const oldSale=showReceipt;showReceipt=function(...args){const result=oldSale(...args);prepare('sale');return result;};
- const oldInvoice=showInvoice;showInvoice=function(...args){const result=oldInvoice(...args);prepare('document');return result;};
+ function addBranch(kind,id){
+ const record=(kind==='sale'?state.sales:state.invoices).find(x=>x.id===id)||{};
+ const branch=record.branchName||window.BOOT?.branch?.name;
+ const code=record.branchCode||window.BOOT?.branch?.code;
+ if(!branch)return;
+ const holder=$('#receipt-content'),heading=holder.querySelector('.receipt-head')||holder;
+ const p=document.createElement('p');p.style.cssText='font-size:11px;margin:5px 0;font-weight:600';
+ p.textContent='Branch: '+branch+(code?' ('+code+')':'');
+ heading.prepend(p);
+}
+const oldSale=showReceipt;showReceipt=function(...args){const result=oldSale(...args);addBranch('sale',args[0]);prepare('sale');return result;};
+ const oldInvoice=showInvoice;showInvoice=function(...args){const result=oldInvoice(...args);addBranch('invoice',args[0]);prepare('document');return result;};
  const oldClosing=showClosing;showClosing=function(...args){const result=oldClosing(...args);prepare('document');return result;};
  const oldRx=printRx;printRx=function(...args){const result=oldRx(...args);prepare('document');return result;};
  const oldSettings=renderBackup;renderBackup=function(...args){const result=oldSettings(...args);
