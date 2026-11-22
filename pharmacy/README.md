@@ -7,14 +7,16 @@ Future domain, not yet attached: pharmacy.greylad.me
 
 ## Current activation status
 
-The interface and backend source are prepared. **The dedicated Supabase project has not been created because the organisation has reached its free-project limit.** The published sign-in page remains closed until that project is provisioned and hosted integration checks pass. Do not enter real pharmacy or patient records before activation.
+The production project is `greyladpharmacy` on Vercel. The separate Greylad Pharmacy Supabase project `ledyvvgpiabwdyyiwycm` is active, with the production `gp_*` workspace schema and `pharmacy-api` Edge Function deployed.
 
-Source is stored under `pharmacy/` on the `pharmacy-online` branch of `Georgeseguya/Greylad`. Production deployments select this branch explicitly. Do not change the main Greylad website project or point this app at the repository default branch.
+The initial approved owner identity is `George`, with pharmacy code `greylad-pharmacy`. The owner registration form accepts only approved identities, uses Supabase Auth, requires email verification, then provisions the empty pharmacy workspace and an Admin account at first sign-in. **An account is not considered activated until its email is verified and sign-in succeeds.** No sample medicines, customers or patient data are seeded.
+
+GitHub source is in `Georgeseguya/Greylad` on the `pharmacy-online` branch, within `pharmacy/`. The original offline demonstration remains a separate Vercel project and is not the production application.
 
 ## Build and verify
 
 Use Node 22 or later. Run `npm ci`, `npm run build`, then `npm test`.
-Set `PHARMACY_API_URL=https://PROJECT.supabase.co/functions/v1/pharmacy-api` in Vercel before building the activated release. This URL is public; service keys are never used by the frontend. With no API URL, sign-in stays disabled. There is no demo fallback or local stock database.
+Vercel uses `PHARMACY_API_URL=https://ledyvvgpiabwdyyiwycm.supabase.co/functions/v1/pharmacy-api` for all targets. This URL is public; service keys are never used by the frontend. With no API URL, sign-in stays disabled. There is no demo fallback or local stock database.
 
 ## Backend activation
 
@@ -41,13 +43,16 @@ Overview shows stock alerts, daily sales, unpaid invoices and recent transaction
 
 Wholesale supports business details, TIN/licence references, a wholesale price per smallest unit, minimum quantities and calculated prices for configured larger packs. Wholesale sales require a saved business customer. Invoices remain unpaid until full settlement; they do not reserve stock. Credit-ledger dispatch, partial repayments and credit limits are not implemented in this release.
 
-## Work still required before activation
+## Remaining verification and setup
 
-- Hosted Supabase deployment and end-to-end authentication/concurrency verification are blocked on project capacity.
-- Account-change notifications are queued transactionally. Email sending, monthly-report scheduling and delivery monitoring are not connected. No email is represented as delivered.
-- Pharmacy-name changes remain platform-managed. The requested email-code confirmation flow is not implemented yet.
-- Password recovery and initial account activation need the chosen email provider and a verified recovery flow before real staff onboarding.
-- Workspace storage is a transactionally guarded JSON ledger for initial use. High-volume wholesale operations will need normalized database tables and paginated queries as volume grows. This is not yet load-tested at that scale.
+- Confirm the Supabase Auth Site URL and email confirmation redirects point to `https://greyladpharmacy.vercel.app`. Hosted Auth settings are not changed by `config.toml`.
+- Verify the initial owner account with a real confirmation email. Do not bypass email verification.
+- Configure the email sender and delivery retries, password recovery and staff invitation process.
+- Configure protected backups and test a restore. Clinical and patient records should not be used in production until privacy, security, audit and disaster-recovery checks are completed.
+- The current online workspace uses a transactionally guarded JSON ledger. High-volume wholesale workflows require normalized tables, performance testing and pagination.
+- Branch management is represented by a separate secure schema in the same Supabase project; transactional integration with the production retail/wholesale workspace is still required.
+
+The production interface has no sample/demo workspace or local stock fallback.
 
 ## Future domain
 
