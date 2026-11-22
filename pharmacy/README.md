@@ -22,11 +22,11 @@ Vercel uses `PHARMACY_API_URL=https://ledyvvgpiabwdyyiwycm.supabase.co/functions
 
 1. Create a separate Supabase project in the agreed organisation. Do not apply this migration to VybaCash or FD TT Workspace.
 2. Apply `supabase/migrations/20261122000100_pharmacy.sql` to that empty project. Tables use RLS with no direct anon/authenticated access. The Edge API alone accesses records with its injected service credential.
-3. Disable public signup in hosted Auth settings. `supabase/config.toml` records the intended settings but does not change hosted Auth by itself. Set the site URL and redirect allowlist to the production address.
+3. Supabase email verification must remain enabled. The public application only accepts owner registration for an approved identity; other staff must be enrolled by an administrator. The hosted Auth signup setting is currently enabled for the first-owner flow. Set the Site URL and redirect allowlist to the production address.
 4. Build, then deploy `supabase/functions/pharmacy-api` with gateway JWT verification disabled. The function authenticates every protected request with Supabase Auth, checks current membership and checks pharmacy status. Only login/refresh are unauthenticated routes.
 5. Set `PHARMACY_SITE_URL` on the function. Check the function receives its injected secret and publishable keys. Never add a secret/service key to Vercel, browser code or GitHub.
-6. Create approved Auth users through the platform's Supabase Auth administration. No public signup is provided. Use the provisioning script below to attach each user to a pharmacy.
-7. Verify two distinct pharmacy tenants, suspended accounts, direct REST denial, concurrent checkouts, invoice settlement, clinical read filtering, session refresh and logout against the hosted service before opening sign-in. Run Supabase security/performance advisors.
+6. For the first pharmacy owner, use the approved registration form and confirm the email, then sign in with the pharmacy code and username. The server creates the initial empty workspace and the Admin membership once. Other accounts still require approved provisioning.
+7. Automated local checks cover tenant isolation, stale writes, stock calculations, wholesale, invoice settlement, user roles and UI rendering. Hosted two-tenant concurrency, real-email registration, recovery and complete privacy controls still require final verification before processing actual patient data.
 8. Configure backup retention and a tested restore procedure for the plan selected. The application provides an Admin export, not a browser restore of production records.
 
 ## Platform account provisioning
