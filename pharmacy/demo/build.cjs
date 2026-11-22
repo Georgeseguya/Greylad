@@ -1,0 +1,13 @@
+const fs=require('node:fs');
+const original=fs.readFileSync('demo-original.html','utf8');
+const patch=fs.readFileSync('branch-demo.js','utf8');
+if(!original.includes('retail-pharmacy-demo-v1')||!original.includes('data-tab="checkout"')||!original.includes('data-tab="patients"'))throw Error('Not the original pharmacy demo');
+if(!patch.includes('demo-branch-switch')||!patch.includes('demoOverview'))throw Error('Branch testing script missing');
+const marker='</body></html>';
+if(!original.includes(marker))throw Error('Demo closing markup not found');
+const html=original.replace(marker,'<script>'+patch.replace(/<\/script/gi,'<\\/script')+'</script>'+marker);
+fs.mkdirSync('dist',{recursive:true});
+fs.writeFileSync('dist/index.html',html);
+fs.writeFileSync('dist/robots.txt','User-agent: *\nDisallow: /\n');
+fs.writeFileSync('dist/vercel.json',JSON.stringify({headers:[{source:'/(.*)',headers:[{key:'X-Content-Type-Options',value:'nosniff'},{key:'X-Frame-Options',value:'DENY'}]}]}));
+console.log('Demo build verified',html.length,'branch isolation and overview included');
