@@ -82,9 +82,13 @@ function updateChoices(){
 function switchBranch(id){
  if(id===active)return;
  if(cart.length&&!confirm('Switch branches and clear your basket?')){$('#demo-branch-switch').value=active;return;}
+ // Save the branch being left before changing the in-memory workspace.
+ if(active!=='all')localStorage.setItem(stockKey(active),JSON.stringify(state));
  cart=[];saleToken=uuid();
- if(id!=='all'){const data=readState(id);if(!localStorage.getItem(stockKey(id)))localStorage.setItem(stockKey(id),JSON.stringify(data));
-  state={...P.validateBackup({app:'retail-pharmacy-offline',version:13,data}),revision:data.revision||0};window.DEMO_BRANCH=branch(id);
+ if(id!=='all'){
+  const data=readState(id);
+  state={...P.validateBackup({app:'retail-pharmacy-offline',version:13,data}),revision:data.revision||0};
+  window.DEMO_BRANCH=branch(id);
  }
  active=id;sessionStorage.setItem(activeKey,id);updateChoices();go('overview');
 }
