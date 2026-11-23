@@ -20,7 +20,7 @@ if(window.Access){
   if(!can('sell')&&!can('reports'))n.sales=(s.sales||[]).map(x=>({id:x.id,order:x.order,date:x.date,lines:(x.lines||[]).map(l=>({batchId:l.batchId,qty:l.qty}))}));
   else if(!can('reports'))n.sales=(s.sales||[]).map(({cost,profit,...x})=>({...x,lines:(x.lines||[]).map(({unitCost,cost,...l})=>l)}));
   if(!can('finance')){n.batches=(s.batches||[]).map(({unitCost,cost,...b})=>b);n.adjustments=(n.adjustments||[]).map(({value,...a})=>a);}
-  delete n.access;
+  if(u.role!=='Admin')delete n.access;
   return {data:n,scope:{pharmacyId:s.settings.pharmacyId,branchId:s.settings.branchId||null,branchName:s.settings.branchName||null,role:u.role,includedSections:Object.entries(scopes).filter(([key,right])=>can(right)).map(([key])=>key)}};
  };
  if(typeof applyAccessUI==='function'){
