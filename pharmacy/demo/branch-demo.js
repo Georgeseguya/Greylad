@@ -27,6 +27,23 @@ persist=function(next,expected=state.revision){
  next.revision=expected+1;localStorage.setItem(stockKey(active),JSON.stringify(next));state=next;
 };
 const originalRender=render;
+const commercialKey='gp-demo-commercial-v1';
+function commercialData(){try{return JSON.parse(localStorage.getItem(commercialKey)||'{}')}catch{return {customers:[],prices:[]}}}
+function saveCommercial(data){localStorage.setItem(commercialKey,JSON.stringify(data))}
+function renderDemoCommercial(which){
+ const data=commercialData();
+ if(which==='customers'){
+  $('#breadcrumb').textContent='Business customers';$('#heading').textContent='Business customers';$('#subtitle').textContent='';
+  $('#stats').hidden=true;$('#toolbar').hidden=true;$('.intro .actions').hidden=true;$('.intro small').hidden=true;$('#notice').hidden=true;
+  $('#content').innerHTML='<div class="section-body"><h3>Add business customer</h3><form id="demo-customer-form" class="demo-commercial-form"><label>Business name *<input name="name" required maxlength="160"></label><label>Contact person<input name="contact" maxlength="100"></label><label>Telephone<input name="phone" maxlength="40"></label><label>Email<input name="email" type="email" maxlength="160"></label><label>Address<input name="address" maxlength="240"></label><label>TIN<input name="tin" maxlength="60"></label><label>Licence reference<input name="licence" maxlength="80"></label><button>Save customer</button></form></div><h3>Saved business customers</h3><div class="demo-table"><table><thead><tr><th>Business</th><th>Contact</th><th>TIN / Licence</th></tr></thead><tbody>'+data.customers.map(c=>'<tr><td>'+safe(c.name)+'<small>'+safe(c.address)+'</small></td><td>'+safe(c.contact)+'<small>'+safe(c.phone)+' · '+safe(c.email)+'</small></td><td>'+safe(c.tin)+'<small>'+safe(c.licence)+'</small></td></tr>').join('')+'</tbody></table></div>';
+  $('#demo-customer-form').onsubmit=e=>{e.preventDefault();data.customers.push({...Object.fromEntries(new FormData(e.target)),id:uuid()});saveCommercial(data);renderDemoCommercial('customers');};
+ }else{
+  $('#breadcrumb').textContent='Wholesale prices';$('#heading').textContent='Wholesale prices';$('#subtitle').textContent='';
+  $('#stats').hidden=true;$('#toolbar').hidden=true;$('.intro .actions').hidden=true;$('.intro small').hidden=true;$('#notice').hidden=true;
+  $('#content').innerHTML='<div class="section-body"><h3>Set wholesale price</h3><form id="demo-price-form" class="demo-commercial-form"><label>Medicine *<select name="medicineId" required><option value="">Select medicine</option>'+(state.medicines||[]).map(m=>'<option value="'+safe(m.id)+'">'+safe(m.brand)+' / '+safe(m.generic)+' '+safe(m.strength)+'</option>').join('')+'</select></label><label>Price per smallest unit (UGX) *<input name="price" type="number" min="0" step="0.01" required></label><label>Minimum quantity *<input name="minimum" type="number" min="1" step="1" value="1" required></label><button>Save wholesale price</button></form></div><h3>Saved wholesale prices</h3><div class="demo-table"><table><thead><tr><th>Medicine</th><th>Wholesale price</th><th>Minimum quantity</th></tr></thead><tbody>'+data.prices.map(p=>{const m=(state.medicines||[]).find(m=>m.id===p.medicineId);return '<tr><td>'+safe(m?.brand||'Medicine')+' / '+safe(m?.generic||'')+' '+safe(m?.strength||'')+'</td><td>'+moneyDemo(p.price)+'</td><td>'+Number(p.minimum).toLocaleString()+'</td></tr>';}).join('')+'</tbody></table></div>';
+  $('#demo-price-form').onsubmit=e=>{e.preventDefault();const v=Object.fromEntries(new FormData(e.target));const m=data.prices.find(x=>x.medicineId===v.medicineId);if(m){m.price=Number(v.price);m.minimum=Number(v.minimum);}else data.prices.push({medicineId:v.medicineId,price:Number(v.price),minimum:Number(v.minimum)});saveCommercial(data);renderDemoCommercial('tradeprices');};
+ }
+}
 function demoOverview(){
  const branches=active==='all'?directory.branches:[branch(active)];
  const items=branches.map(b=>{const d=b.id===active&&active!=='all'?state:readState(b.id);return {b,d,units:leftUnits(d),value:stockValue(d),sales:(d.sales||[]).reduce((n,x)=>n+Number(x.total||0),0)};});
@@ -37,7 +54,7 @@ function demoOverview(){
  const stock='<h3>Inventory</h3><div class="demo-table"><table><thead><tr><th>Branch</th><th>Brand</th><th>Generic / strength</th><th>Available</th></tr></thead><tbody>'+items.flatMap(x=>(x.d.medicines||[]).map(m=>'<tr><td>'+safe(x.b.name)+'</td><td>'+safe(m.brand)+'</td><td>'+safe(m.generic)+' '+safe(m.strength)+'</td><td>'+P.available(m,x.d.batches||[],today(),x.d.sales||[],x.d.adjustments||[])+' '+safe(m.unit)+'</td></tr>')).join('')+'</tbody></table></div>';
  return grid+summary+stock;
 }
-render=function(){if(tab!=='overview')return originalRender();
+render=function(){if(tab==='customers'||tab==='tradeprices'){renderDemoCommercial(tab);return;}if(tab!=='overview')return originalRender();
  tab='catalogue';originalRender();tab='overview';
  document.querySelectorAll('aside nav [data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab==='overview'));
  $('#breadcrumb').textContent='Overview';$('#heading').textContent='Overview';$('#subtitle').textContent='';
@@ -45,7 +62,7 @@ render=function(){if(tab!=='overview')return originalRender();
  $('#stats').hidden=true;$('#toolbar').hidden=true;$('#content').innerHTML=demoOverview();
 };
 const oldGo=go;
-go=function(n){if(active==='all'&&n!=='overview')return;if(n!=='overview')return oldGo(n);oldGo('catalogue');tab='overview';render();};
+go=function(n){if(active==='all'&&n!=='overview')return;if(n==='customers'||n==='tradeprices'){tab=n;document.querySelectorAll('aside nav [data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===n));renderDemoCommercial(n);return;}if(n!=='overview')return oldGo(n);oldGo('catalogue');tab='overview';render();};
 // Normalize older demo builds that may already contain branch controls.
 document.querySelectorAll('#demo-branch-switch').forEach((el,i)=>{if(i>0)el.closest('label')?.remove();});
 document.querySelectorAll('#demo-manage-branches').forEach((el,i)=>{if(i>0)el.remove();});
@@ -84,7 +101,7 @@ const css=[
 '#demo-branch-dialog td{border-bottom:1px solid #ddd;padding:7px;font-size:12px}',
 '@media(max-width:700px){.demo-branch-label{width:100%;justify-content:space-between}}'
 ].join('\n');
-const style=document.createElement('style');style.textContent=css;document.head.append(style);
+css+='.demo-commercial-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;max-width:900px}.demo-commercial-form label{display:grid;gap:5px;font-size:12px}.demo-commercial-form input,.demo-commercial-form select{padding:9px;border:1px solid #ccd0d3;border-radius:7px}.demo-commercial-form button{align-self:end;min-height:36px}';const style=document.createElement('style');style.textContent=css;document.head.append(style);
 document.body.insertAdjacentHTML('beforeend',
 '<dialog id="demo-branch-dialog"><div style="display:flex;align-items:center;justify-content:space-between"><h2>Branches</h2><button id="demo-branch-close">Close</button></div>'+
 '<form id="demo-branch-add"><h3>New branch</h3><label>Branch name<input name="name" maxlength="100" required></label><label>Code<input name="code" maxlength="20" required></label><label>Address<input name="address" maxlength="300"></label><button>Add branch</button></form>'+
