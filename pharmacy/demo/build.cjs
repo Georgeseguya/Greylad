@@ -15,13 +15,25 @@ async function main() {
   }
 
   let removedLayers = 0;
-  original = original.replace(/<script\\b[^>]*>[\\s\\S]*?<\\/script>/gi, tag => {
+  let rebuilt = '';
+  let cursor = 0;
+  while (true) {
+    const open = original.indexOf('<script', cursor);
+    if (open < 0) break;
+    const close = original.indexOf('</script>', open);
+    if (close < 0) break;
+    const after = close + '</script>'.length;
+    const tag = original.slice(open, after);
     if (tag.includes('demo-branch-switch') && tag.includes('demoOverview')) {
+      rebuilt += original.slice(cursor, open);
       removedLayers++;
-      return '';
+    } else {
+      rebuilt += original.slice(cursor, after);
     }
-    return tag;
-  });
+    cursor = after;
+  }
+  rebuilt += original.slice(cursor);
+  original = rebuilt;
   if (!removedLayers) throw new Error('Could not locate the existing demo branch layer. Build stopped to protect it.');
 
   const marker = '</body></html>';
