@@ -16,7 +16,7 @@ test('every approved role can export a role-scoped branch backup',()=>{
   const result=Access.backupData(s,account.id);
   assert.equal(result.scope.role,account.role);
   assert.equal(result.scope.branchId,'b1');
-  assert.equal(result.data.access,undefined,'backup must not disclose the staff directory');
+  if(account.role==='Admin')assert.ok(result.data.access,'admin backup must retain restore metadata');else assert.equal(result.data.access,undefined,'staff backup must not disclose the account directory');
  }
 });
 
