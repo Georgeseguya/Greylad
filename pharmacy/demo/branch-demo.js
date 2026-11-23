@@ -101,7 +101,7 @@ const css=[
 '#demo-branch-dialog td{border-bottom:1px solid #ddd;padding:7px;font-size:12px}',
 '@media(max-width:700px){.demo-branch-label{width:100%;justify-content:space-between}}'
 ].join('\n');
-const commercialCss='.demo-commercial-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;max-width:900px}.demo-commercial-form label{display:grid;gap:5px;font-size:12px}.demo-commercial-form input,.demo-commercial-form select{padding:9px;border:1px solid #ccd0d3;border-radius:7px}.demo-commercial-form button{align-self:end;min-height:36px}';const style=document.createElement('style');style.textContent=css+'\\n'+commercialCss;document.head.append(style);style.textContent=css;document.head.append(style);
+const commercialCss='.demo-commercial-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;max-width:900px}.demo-commercial-form label{display:grid;gap:5px;font-size:12px}.demo-commercial-form input,.demo-commercial-form select{padding:9px;border:1px solid #ccd0d3;border-radius:7px}.demo-commercial-form button{align-self:end;min-height:36px}';const style=document.createElement('style');style.textContent=css+'\\n'+commercialCss;document.head.append(style);
 document.body.insertAdjacentHTML('beforeend',
 '<dialog id="demo-branch-dialog"><div style="display:flex;align-items:center;justify-content:space-between"><h2>Branches</h2><button id="demo-branch-close">Close</button></div>'+
 '<form id="demo-branch-add"><h3>New branch</h3><label>Branch name<input name="name" maxlength="100" required></label><label>Code<input name="code" maxlength="20" required></label><label>Address<input name="address" maxlength="300"></label><button>Add branch</button></form>'+
