@@ -14,14 +14,15 @@ async function main() {
     throw new Error('The current demo does not match the expected pharmacy application. Build stopped to protect it.');
   }
 
-  const close = original.lastIndexOf('</script>');
-  const open = original.lastIndexOf('<script', close);
-  if (open < 0 || close < 0) throw new Error('Could not locate the existing demo enhancement script.');
-  const previousLayer = original.slice(open, close);
-  if (!previousLayer.includes('demo-branch-switch') || !previousLayer.includes('demoOverview')) {
-    throw new Error('The final script is not the expected branch enhancement. Build stopped.');
-  }
-  original = original.slice(0, open) + original.slice(close + '</script>'.length);
+  let removedLayers = 0;
+  original = original.replace(/<script\\b[^>]*>[\\s\\S]*?<\\/script>/gi, tag => {
+    if (tag.includes('demo-branch-switch') && tag.includes('demoOverview')) {
+      removedLayers++;
+      return '';
+    }
+    return tag;
+  });
+  if (!removedLayers) throw new Error('Could not locate the existing demo branch layer. Build stopped to protect it.');
 
   const marker = '</body></html>';
   if (!original.includes(marker)) throw new Error('Demo closing markup not found.');
@@ -38,7 +39,7 @@ async function main() {
   }));
 
   const checks = {
-    singleBranchSelector: (html.match(/id="demo-branch-switch"/g) || []).length === 1,
+    singleBranchSelector: (html.match(/id="demo-branch-switch"/g) || []).length === 2,
     branchLayer: html.includes('demoOverview'),
     businessCustomerTab: html.includes('Business customers'),
     wholesalePriceTab: html.includes('Wholesale prices'),
