@@ -5,7 +5,7 @@ const patch = fs.readFileSync('branch-demo.js', 'utf8');
 
 async function main() {
   const response = await fetch(DEMO_URL, { cache: 'no-store' });
-  if (!response.ok) throw new Error(`Could not retrieve the existing demo (${response.status})`);
+  if (!response.ok) throw new Error(\`Could not retrieve the existing demo (\${response.status})\`);
 
   let original = await response.text();
   if (!original.includes('retail-pharmacy-demo-v1') ||
@@ -14,8 +14,6 @@ async function main() {
     throw new Error('The current demo does not match the expected pharmacy application. Build stopped to protect it.');
   }
 
-  // The published demo currently contains its previous branch layer as the final inline script.
-  // Remove only that layer, retaining the full original pharmacy application and all its screens.
   const close = original.lastIndexOf('</script>');
   const open = original.lastIndexOf('<script', close);
   if (open < 0 || close < 0) throw new Error('Could not locate the existing demo enhancement script.');
@@ -27,11 +25,11 @@ async function main() {
 
   const marker = '</body></html>';
   if (!original.includes(marker)) throw new Error('Demo closing markup not found.');
-  const html = original.replace(marker, '<script>' + patch.replace(/<\\/script/gi, '<\\\\/script') + '</script>' + marker);
+  const html = original.replace(marker, '<script>' + patch.replace(/<\/script/gi, '<\\/script') + '</script>' + marker);
 
   fs.mkdirSync('dist', { recursive: true });
   fs.writeFileSync('dist/index.html', html);
-  fs.writeFileSync('dist/robots.txt', 'User-agent: *\\nDisallow: /\\n');
+  fs.writeFileSync('dist/robots.txt', 'User-agent: *\nDisallow: /\n');
   fs.writeFileSync('dist/vercel.json', JSON.stringify({
     headers: [{ source: '/(.*)', headers: [
       { key: 'X-Content-Type-Options', value: 'nosniff' },
@@ -41,7 +39,7 @@ async function main() {
 
   const checks = {
     singleBranchSelector: (html.match(/id="demo-branch-switch"/g) || []).length === 1,
-    singleBranchEnhancement: (html.match(/demo-branch-switch/g) || []).length > 0,
+    branchLayer: html.includes('demoOverview'),
     businessCustomerTab: html.includes('Business customers'),
     wholesalePriceTab: html.includes('Wholesale prices'),
     originalCheckout: html.includes('data-tab="checkout"'),
