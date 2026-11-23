@@ -5,7 +5,7 @@ const patch = fs.readFileSync('branch-demo.js', 'utf8');
 
 async function main() {
   const response = await fetch(DEMO_URL, { cache: 'no-store' });
-  if (!response.ok) throw new Error(\`Could not retrieve the existing demo (\${response.status})\`);
+  if (!response.ok) throw new Error('Could not retrieve the existing demo (' + response.status + ')');
 
   let original = await response.text();
   if (!original.includes('retail-pharmacy-demo-v1') ||
