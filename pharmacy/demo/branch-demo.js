@@ -5,6 +5,7 @@ if(window.Access){
  if(!Access.roles.includes('Dispenser'))Access.roles.splice(3,0,'Dispenser');
  if(!Access.staffRoles.includes('Dispenser'))Access.staffRoles.splice(1,0,'Dispenser');
  const rights=Access.rights;
+ if(rights.Manager)rights.Manager=rights.Manager.filter(p=>p!=='accounts');
  const backupRoles=['Manager','Pharmacist','Dispenser','Cashier','Stock clerk','Viewer','Stock manager'];
  backupRoles.forEach(role=>{if(rights[role]&&!rights[role].includes('backup.export'))rights[role].push('backup.export');});
  // Restore remains an owner/Admin-only operation.
