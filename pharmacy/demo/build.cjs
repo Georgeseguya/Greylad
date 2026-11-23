@@ -40,7 +40,7 @@ async function main() {
   }));
 
   const checks = {
-    singleBranchSelector: (html.match(/id="demo-branch-switch"/g) || []).length === 0,
+    singleBranchSelector: (html.match(/id="demo-branch-switch"/g) || []).length === 1,
     singleBranchEnhancement: (html.match(/demo-branch-switch/g) || []).length > 0,
     businessCustomerTab: html.includes('Business customers'),
     wholesalePriceTab: html.includes('Wholesale prices'),
