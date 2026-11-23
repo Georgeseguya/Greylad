@@ -72,9 +72,13 @@ async function view(u:any,pharmacy:any,id?:string,data?:any){
  const may=(p:string)=>u.role==='Admin'||G.Access.rights[u.role]?.includes(p),out=structuredClone(s);
  if(!may('clinical'))for(const k of ['patients','appointments','consultations','prescriptions'])out[k]=[];
  if(!may('staff'))out.employees=[];
- if(!may('finance')){out.cashMovements=[];out.closings=[];}
- if(!may('reports'))out.editHistory=[];
- if(!may('sell')&&!may('reports')){out.invoices=[];out.customers=[];out.sales=out.sales.map((s:any)=>({id:s.id,order:s.order,date:s.date,lines:s.lines.map((l:any)=>({batchId:l.batchId,qty:l.qty}))}));}
+ if(!may('procurement')){out.suppliers=[];out.purchaseOrders=[];}
+ if(!may('adjust')){out.stocktakes=[];out.adjustments=(out.adjustments||[]).map((a:any)=>({id:a.id,batchId:a.batchId,medicineId:a.medicineId,delta:a.delta,order:a.order,date:a.date}));}
+ if(!may('block'))out.blockHistory=[];
+ if(!may('catalogue.write'))out.tradePrices=[];
+ if(!may('finance')){out.cashMovements=[];out.closings=[];out.batches=(out.batches||[]).map(({unitCost,cost,...b}:any)=>b);out.adjustments=(out.adjustments||[]).map(({value,...a}:any)=>a);}
+ if(!may('reports')){out.editHistory=[];out.events=[];out.sales=(out.sales||[]).map(({cost,profit,...s}:any)=>({...s,lines:(s.lines||[]).map(({unitCost,cost,...l}:any)=>l)}));}
+ if(!may('sell')&&!may('reports')){out.invoices=[];out.customers=[];out.sales=(out.sales||[]).map((s:any)=>({id:s.id,order:s.order,date:s.date,lines:s.lines.map((l:any)=>({batchId:l.batchId,qty:l.qty}))}));}
  const members=scope.owner?(await rest('gp_memberships?pharmacy_id=eq.'+u.pharmacyId)).map(member):[u];
  out.access={pharmacyId:u.pharmacyId,pharmacyName:pharmacy.name,mode:'online',accounts:members,audit:[],emails:[]};
  out.revision=typeof row.revision==='number'?row.revision:out.revision;
