@@ -3,12 +3,17 @@
 Demo site: https://greylad-pharmacy-demo.vercel.app/
 Production site: https://greyladpharmacy.vercel.app/
 
-This directory contains the branch-testing layer for the existing, separate offline demo. It adds Overview, branch selection, separate browser-storage records for each branch, owner-style all-branch stock totals, test employee assignments and branch labels on printed receipts/invoices.
+This is the offline demo. It preserves the existing pharmacy demo screens and adds Overview, branch selection, isolated browser storage for each branch, owner-style all-branch totals, sample employee assignments, and branch labels on printed receipts and invoices.
 
-The demo does not connect to production Supabase or store actual employees. The Main Branch retains the existing demo's local storage key; additional branches use their own keys.
+The demo does not connect to production Supabase or create real employee accounts. Main Branch keeps the original demo storage key; additional branches use separate keys. When switching, the demo saves the branch being left and reloads the selected branch so inventory and sales cannot carry over between branches.
 
-The demo Vercel project is built by combining the preserved original uploaded source file (SHA `925378b31f458a5ab7cd353d7b7c8e3a61aa401d`) with `branch-demo.js` using `build.cjs`. The original demo source is preserved on its previous Vercel deployment.
+The demo is deployed separately from the live pharmacy. It is for fictional test records only.
 
-**Deployment status, November 22, 2026:** GitHub updates and automated build/browser checks are complete. Vercel returned `402 api-deployments-free-per-day` when publishing the updated demo. The public demo remains on its previous successful release until a new deployment succeeds. The production source is likewise awaiting a new Vercel release. Do not claim the branch UI is live until production aliases are checked.
+## Current release
 
-Whenever a pharmacy change is released, test and deploy **both** the production application and the separate offline demo. Never mix test data with production data.
+- Live pharmacy: deployed and READY at https://greyladpharmacy.vercel.app/
+- Demo pharmacy: deployed and READY at https://greylad-pharmacy-demo.vercel.app/
+- Production Supabase project: active; branch API code matches the deployed Edge Function.
+- Demo build: generated from the preserved v0.15 offline application plus `branch-demo.js`.
+
+When changing pharmacy functionality, update and verify both releases. Never copy demo data into the production database.
