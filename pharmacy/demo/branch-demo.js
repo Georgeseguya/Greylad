@@ -46,10 +46,27 @@ render=function(){if(tab!=='overview')return originalRender();
 };
 const oldGo=go;
 go=function(n){if(active==='all'&&n!=='overview')return;if(n!=='overview')return oldGo(n);oldGo('catalogue');tab='overview';render();};
-const controls='<label class="demo-branch-label">Branch <select id="demo-branch-switch"></select></label><button type="button" class="secondary" id="demo-manage-branches">Manage branches</button>';
-document.querySelector('header .header-tools').insertAdjacentHTML('afterbegin',controls);
-document.querySelector('aside nav').insertAdjacentHTML('afterbegin','<button type="button" data-tab="overview">◫ &nbsp; Overview</button>');
+// Normalize older demo builds that may already contain branch controls.
+document.querySelectorAll('#demo-branch-switch').forEach((el,i)=>{if(i>0)el.closest('label')?.remove();});
+document.querySelectorAll('#demo-manage-branches').forEach((el,i)=>{if(i>0)el.remove();});
+const headerTools=document.querySelector('header .header-tools');
+if(!document.getElementById('demo-branch-switch')){
+ const controls='<label class="demo-branch-label">Branch <select id="demo-branch-switch"></select></label><button type="button" class="secondary" id="demo-manage-branches">Manage branches</button>';
+ headerTools.insertAdjacentHTML('afterbegin',controls);
+}
+const overviewButtons=[...document.querySelectorAll('aside nav [data-tab="overview"]')];
+overviewButtons.slice(1).forEach(el=>el.remove());
+if(!overviewButtons.length)document.querySelector('aside nav').insertAdjacentHTML('afterbegin','<button type="button" data-tab="overview">◫ &nbsp; Overview</button>');
 document.querySelector('aside nav [data-tab="overview"]').onclick=()=>go('overview');
+// Keep the wholesale tools together at the bottom of the sidebar.
+const nav=document.querySelector('aside nav');
+for(const [tabId,label] of [['customers','Business customers'],['tradeprices','Wholesale prices']]){
+ let item=nav.querySelector('[data-tab="'+tabId+'"]');
+ if(!item){item=document.createElement('button');item.type='button';item.dataset.tab=tabId;item.textContent=label;nav.append(item);}
+}
+const settings=nav.querySelector('[data-tab="backup"]');
+const customers=nav.querySelector('[data-tab="customers"]'),prices=nav.querySelector('[data-tab="tradeprices"]');
+if(settings){settings.before(customers);settings.before(prices);}
 const css=[
 '.demo-branch-label{display:flex;align-items:center;gap:6px;font-size:12px}',
 '#demo-branch-switch{max-width:180px;padding:8px;border:1px solid #cbd0d3;border-radius:8px}',
