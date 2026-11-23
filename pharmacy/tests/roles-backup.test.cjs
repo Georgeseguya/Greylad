@@ -7,7 +7,7 @@ function fixture(){
  const accounts=roles.map((role,i)=>({id:'u'+i,pharmacyId:'p1',username:'staff'+i,name:role,designation:role,email:`staff${i}@example.test`,role,status:'Active'}));
  const row=(id)=>[{id}];
  return {settings:{pharmacyId:'p1',pharmacyName:'Test Pharmacy',branchId:'b1',branchName:'Main'},access:{pharmacyId:'p1',pharmacyName:'Test Pharmacy',accounts},
- medicines:row('m'),batches:row('b'),sales:row('s'),adjustments:row('a'),suppliers:row('sup'),purchaseOrders:row('po'),editHistory:row('eh'),employees:row('emp'),blockHistory:row('bh'),invoices:row('i'),cashMovements:row('cm'),closings:row('cl'),stocktakes:row('st'),patients:row('pt'),appointments:row('ap'),consultations:row('co'),prescriptions:row('pr'),events:row('ev'),customers:row('cu'),tradePrices:row('tp')};
+ medicines:row('m'),batches:row('b'),sales:[{id:'s',lines:[{batchId:'b',qty:1}],total:123,method:'Cash',cost:5,profit:2}],adjustments:row('a'),suppliers:row('sup'),purchaseOrders:row('po'),editHistory:row('eh'),employees:row('emp'),blockHistory:row('bh'),invoices:row('i'),cashMovements:row('cm'),closings:row('cl'),stocktakes:row('st'),patients:row('pt'),appointments:row('ap'),consultations:row('co'),prescriptions:row('pr'),events:row('ev'),customers:row('cu'),tradePrices:row('tp')};
 }
 
 test('every approved role can export a role-scoped branch backup',()=>{
