@@ -5,7 +5,7 @@ if(window.Access){
  const rights=Access.rights;
  const backupRoles=['Manager','Pharmacist','Dispenser','Cashier','Stock clerk','Viewer','Stock manager'];
  backupRoles.forEach(role=>{if(rights[role]&&!rights[role].includes('backup.export'))rights[role].push('backup.export');});
- rights.Manager.push('backup.restore');
+ // Restore remains an owner/Admin-only operation.
  rights.Dispenser=['stock.read','catalogue.write','medicine.edit','edit','adjust','block','sell','invoice.cancel','clinical','settings','backup.export'];
  Access.tabs.backup='backup.export';
  Access.backupData=function(s,id){
