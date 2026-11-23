@@ -30,7 +30,8 @@ test('backup exports only records visible to the signed-in role',()=>{
  const s=fixture(),viewer=s.access.accounts.find(x=>x.role==='Viewer'),cashier=s.access.accounts.find(x=>x.role==='Cashier'),manager=s.access.accounts.find(x=>x.role==='Manager');
  const v=Access.backupData(s,viewer.id).data;
  assert.equal(v.medicines.length,1);assert.equal(v.batches.length,1);
- for(const k of ['sales','patients','suppliers','cashMovements','employees','prescriptions'])assert.equal(v[k].length,0,k);
+ assert.equal(v.sales.length,1,'minimal sales ledger preserves stock balance');assert.equal(v.sales[0].total,undefined);assert.equal(v.sales[0].method,undefined);assert.equal(v.sales[0].lines[0].qty,1);
+ for(const k of ['patients','suppliers','cashMovements','employees','prescriptions'])assert.equal(v[k].length,0,k);
  const c=Access.backupData(s,cashier.id).data;
  assert.equal(c.sales.length,1);assert.equal(c.invoices.length,1);assert.equal(c.patients.length,0);assert.equal(c.cashMovements.length,0);
  const m=Access.backupData(s,manager.id).data;
