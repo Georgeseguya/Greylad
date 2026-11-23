@@ -35,5 +35,6 @@ test('backup exports only records visible to the signed-in role',()=>{
  assert.equal(c.sales.length,1);assert.equal(c.invoices.length,1);assert.equal(c.patients.length,0);assert.equal(c.cashMovements.length,0);
  const m=Access.backupData(s,manager.id).data;
  assert.equal(m.cashMovements.length,1);assert.equal(m.patients.length,1);assert.equal(m.suppliers.length,1);
- assert.equal(Access.can(s,manager.id,'backup.restore'),false);\n const admin=s.access.accounts.find(x=>x.role==='Admin');assert.equal(Access.can(s,admin.id,'backup.restore'),true);
+ assert.equal(Access.can(s,manager.id,'backup.restore'),false);
+ const admin=s.access.accounts.find(x=>x.role==='Admin');assert.equal(Access.can(s,admin.id,'backup.restore'),true);
 });
