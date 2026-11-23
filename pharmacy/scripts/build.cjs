@@ -26,7 +26,7 @@ ui=ui.replace("const demoMode=new URLSearchParams(location.search).get('demo')==
 write('scripts/generated-ui.js',ui);execFileSync(process.execPath,[path.join(__dirname,'async-ui.cjs'),path.join(__dirname,'generated-ui.js')]);
 let html=read('scripts/base.html').replace(/<!--[\s\S]*?-->/g,'').replace(/<script[^>]*>[\s\S]*?<\/script>/g,'');
 html=html.replace(/<meta name="description"[^>]*>/,'<meta name="description" content="Greylad Pharmacy workspace">');
-html=html.replace(/<title>.*?<\/title>/,'<title>Greylad Pharmacy</title>').replace(/VERSION 0\.20/g,'GREYLAD PHARMACY').replace(/Version 0\.20/g,'Greylad Pharmacy');
+html=html.replace(/<title>.*?<\/title>/,'<title>Greylad Pharmacy</title>').replace(/VERSION 0\.20/g,'GREYLAD PHARMACY').replace(/Version 0\.20/g,'Greylad Pharmacy').replace('OFFLINE · VERSION 0.20','ONLINE · VERSION 1.0').replace('Offline · UGX','Online · UGX').replace('Offline prototype · Records stay in this browser. Export a backup before replacing or moving this file. Use one tab at a time.','Connected workspace. Changes are saved to your pharmacy account.');
 html=html.replace('<nav','<nav'); // Preserve the tested responsive shell.
 html=html.replace(/(<nav[^>]*>)/,'$1<button data-tab="overview">Overview</button>');
 // Keep wholesale tools together at the bottom of the sidebar, immediately before Settings.
