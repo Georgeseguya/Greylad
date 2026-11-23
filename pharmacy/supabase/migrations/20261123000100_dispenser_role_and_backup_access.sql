@@ -31,3 +31,35 @@ begin
   values(p_pharmacy,r.id,'account-change',jsonb_build_object('username',t.username,'role',p_role,'designation',p_designation,'status',p_status,'changedBy',a.name,'reason',p_reason),p_request::text||':'||r.id::text);
  end loop;
 end $function$;
+
+create or replace function public.gp_invite_staff(
+ p_pharmacy uuid,p_owner uuid,p_branch uuid,p_email text,p_username text,p_role text
+) returns uuid
+language plpgsql
+security definer
+set search_path to ''
+as $function$
+declare invite uuid; mail text:=lower(trim(p_email));uname text:=lower(trim(p_username));
+begin
+ if not exists(select 1 from public.gp_owners o join public.gp_memberships m
+ on m.pharmacy_id=o.pharmacy_id and m.user_id=o.user_id and m.status='Active'
+ where o.pharmacy_id=p_pharmacy and o.user_id=p_owner) then raise exception 'Owner access required';end if;
+ if not exists(select 1 from public.gp_branches where pharmacy_id=p_pharmacy and id=p_branch and active)
+ then raise exception 'Branch inactive or not found';end if;
+ if length(mail)<5 or position('@' in mail)<2 or length(mail)>320
+ then raise exception 'Invalid email';end if;
+ if uname!~'^[a-z0-9][a-z0-9._-]{2,39}$'
+ then raise exception 'Invalid username';end if;
+ if p_role not in ('Manager','Pharmacist','Dispenser','Cashier','Stock clerk','Viewer','Stock manager')
+ then raise exception 'Invalid staff role';end if;
+ if exists(select 1 from public.gp_memberships where pharmacy_id=p_pharmacy and username=uname)
+ or exists(select 1 from public.gp_owners where pharmacy_id=p_pharmacy and user_id in
+ (select id from auth.users where lower(email)=mail))
+ then raise exception 'Existing staff should be granted another branch';end if;
+ if exists(select 1 from public.gp_staff_invites where pharmacy_id=p_pharmacy and email=mail
+ and username=uname and accepted_at is null and revoked_at is null and expires_at>now())
+ then raise exception 'Invitation already pending';end if;
+ insert into public.gp_staff_invites(pharmacy_id,branch_id,email,username,role,created_by)
+ values(p_pharmacy,p_branch,mail,uname,p_role,p_owner) returning id into invite;
+ return invite;
+end $function$;
