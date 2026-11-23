@@ -1,6 +1,31 @@
 /* Greylad Pharmacy demo branch testing. All records remain in browser storage. */
 (function(){
 'use strict';
+if(window.Access){
+ const rights=Access.rights;
+ const backupRoles=['Manager','Pharmacist','Dispenser','Cashier','Stock clerk','Viewer','Stock manager'];
+ backupRoles.forEach(role=>{if(rights[role]&&!rights[role].includes('backup.export'))rights[role].push('backup.export');});
+ rights.Manager.push('backup.restore');
+ rights.Dispenser=['stock.read','catalogue.write','medicine.edit','edit','adjust','block','sell','invoice.cancel','clinical','settings','backup.export'];
+ Access.tabs.backup='backup.export';
+ Access.backupData=function(s,id){
+  const u=Access.account(s,id);if(!u||!Access.can(s,id,'backup.export'))throw Error('Backup access denied.');
+  const n=structuredClone(s),can=p=>Access.can(s,id,p);
+  const scopes={medicines:'stock.read',batches:'stock.read',sales:'sell',adjustments:'adjust',suppliers:'procurement',purchaseOrders:'procurement',editHistory:'edit',employees:'staff',blockHistory:'block',invoices:'sell',cashMovements:'finance',closings:'finance',stocktakes:'adjust',patients:'clinical',appointments:'clinical',consultations:'clinical',prescriptions:'clinical',events:'reports',customers:'sell',tradePrices:'catalogue.write'};
+  for(const [key,right] of Object.entries(scopes))if(!can(right))n[key]=[];
+  delete n.access;
+  return {data:n,scope:{pharmacyId:s.settings.pharmacyId,branchId:s.settings.branchId||null,branchName:s.settings.branchName||null,role:u.role,includedSections:Object.entries(scopes).filter(([key,right])=>can(right)).map(([key])=>key)}};
+ };
+ if(typeof applyAccessUI==='function'){
+  const priorApplyAccessUI=applyAccessUI;
+  applyAccessUI=function(){priorApplyAccessUI();const u=Access.account(state,accountSession);document.querySelectorAll('#download-backup').forEach(x=>x.hidden=!u||!Access.can(state,accountSession,'backup.export'));document.querySelectorAll('#restore-backup').forEach(x=>x.hidden=!u||!Access.can(state,accountSession,'backup.restore'));};
+  applyAccessUI();
+ }
+ if(typeof backup==='function'){
+  backup=function(){const payload=state.access?Access.backupData(state,accountSession):{data:state,scope:{role:'Demo'}};download('pharmacy-backup-'+today()+'.json',JSON.stringify({app:'greylad-pharmacy',version:14,exportedAt:new Date().toISOString(),...payload},null,2),'application/json');toast('Role-scoped backup download started.');};
+ }
+}
+
 const dirKey='gp-demo-directory-v1',activeKey='gp-demo-active-branch-v1',prefix='gp-demo-branch-stock-';
 const main={id:'MAIN',code:'MAIN',name:'Main Branch'};
 let directory;
@@ -106,7 +131,7 @@ const commercialCss='.demo-commercial-form{display:grid;grid-template-columns:re
 document.body.insertAdjacentHTML('beforeend',
 '<dialog id="demo-branch-dialog"><div style="display:flex;align-items:center;justify-content:space-between"><h2>Branches</h2><button id="demo-branch-close">Close</button></div>'+
 '<form id="demo-branch-add"><h3>New branch</h3><label>Branch name<input name="name" maxlength="100" required></label><label>Code<input name="code" maxlength="20" required></label><label>Address<input name="address" maxlength="300"></label><button>Add branch</button></form>'+
-'<form id="demo-staff-add"><h3>Employee assignment</h3><label>Employee<input name="name" required maxlength="100"></label><label>Email<input name="email" type="email" required></label><label>Branch<select name="branch" id="demo-staff-options"></select></label><label>Role<select name="role"><option>Manager</option><option>Pharmacist</option><option>Cashier</option><option>Stock clerk</option><option>Viewer</option><option>Stock manager</option></select></label><button>Assign employee</button></form><div id="demo-staff-list"></div></dialog>');
+'<form id="demo-staff-add"><h3>Employee assignment</h3><label>Employee<input name="name" required maxlength="100"></label><label>Email<input name="email" type="email" required></label><label>Branch<select name="branch" id="demo-staff-options"></select></label><label>Role<select name="role"><option>Manager</option><option>Pharmacist</option><option>Dispenser</option><option>Cashier</option><option>Stock clerk</option><option>Viewer</option><option>Stock manager</option></select></label><button>Assign employee</button></form><div id="demo-staff-list"></div></dialog>');
 function updateChoices(){
  $('#demo-branch-switch').innerHTML='<option value="all">All branches</option>'+directory.branches.map(b=>'<option value="'+safe(b.id)+'">'+safe(b.name)+' ('+safe(b.code)+')</option>').join('');
  $('#demo-branch-switch').value=active;
