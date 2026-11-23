@@ -2,6 +2,8 @@
 (function(){
 'use strict';
 if(window.Access){
+ if(!Access.roles.includes('Dispenser'))Access.roles.splice(3,0,'Dispenser');
+ if(!Access.staffRoles.includes('Dispenser'))Access.staffRoles.splice(1,0,'Dispenser');
  const rights=Access.rights;
  const backupRoles=['Manager','Pharmacist','Dispenser','Cashier','Stock clerk','Viewer','Stock manager'];
  backupRoles.forEach(role=>{if(rights[role]&&!rights[role].includes('backup.export'))rights[role].push('backup.export');});
