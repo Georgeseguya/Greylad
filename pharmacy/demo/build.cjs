@@ -51,7 +51,7 @@ async function main() {
   }));
 
   const checks = {
-    singleBranchSelector: (html.match(/id="demo-branch-switch"/g) || []).length === 2,
+    singleBranchSelector: (html.match(/id="demo-branch-switch"/g) || []).length === 1,
     branchLayer: html.includes('demoOverview'),
     businessCustomerTab: html.includes('Business customers'),
     wholesalePriceTab: html.includes('Wholesale prices'),
