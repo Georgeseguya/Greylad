@@ -80,6 +80,7 @@ const nav=document.querySelector('aside nav');
 for(const [tabId,label] of [['customers','Business customers'],['tradeprices','Wholesale prices']]){
  let item=nav.querySelector('[data-tab="'+tabId+'"]');
  if(!item){item=document.createElement('button');item.type='button';item.dataset.tab=tabId;item.textContent=label;nav.append(item);}
+ item.onclick=()=>go(tabId);
 }
 const settings=nav.querySelector('[data-tab="backup"]');
 const customers=nav.querySelector('[data-tab="customers"]'),prices=nav.querySelector('[data-tab="tradeprices"]');
