@@ -13,6 +13,10 @@ if(window.Access){
   const n=structuredClone(s),can=p=>Access.can(s,id,p);
   const scopes={medicines:'stock.read',batches:'stock.read',sales:'sell',adjustments:'adjust',suppliers:'procurement',purchaseOrders:'procurement',editHistory:'edit',employees:'staff',blockHistory:'block',invoices:'sell',cashMovements:'finance',closings:'finance',stocktakes:'adjust',patients:'clinical',appointments:'clinical',consultations:'clinical',prescriptions:'clinical',events:'reports',customers:'sell',tradePrices:'catalogue.write'};
   for(const [key,right] of Object.entries(scopes))if(!can(right))n[key]=[];
+  if(!can('adjust'))n.adjustments=(s.adjustments||[]).map(({id,batchId,medicineId,delta,order,date})=>({id,batchId,medicineId,delta,order,date}));
+  if(!can('sell')&&!can('reports'))n.sales=(s.sales||[]).map(x=>({id:x.id,order:x.order,date:x.date,lines:(x.lines||[]).map(l=>({batchId:l.batchId,qty:l.qty}))}));
+  else if(!can('reports'))n.sales=(s.sales||[]).map(({cost,profit,...x})=>({...x,lines:(x.lines||[]).map(({unitCost,cost,...l})=>l)}));
+  if(!can('finance')){n.batches=(s.batches||[]).map(({unitCost,cost,...b})=>b);n.adjustments=(n.adjustments||[]).map(({value,...a})=>a);}
   delete n.access;
   return {data:n,scope:{pharmacyId:s.settings.pharmacyId,branchId:s.settings.branchId||null,branchName:s.settings.branchName||null,role:u.role,includedSections:Object.entries(scopes).filter(([key,right])=>can(right)).map(([key])=>key)}};
  };
