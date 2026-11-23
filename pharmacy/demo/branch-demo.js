@@ -28,7 +28,7 @@ persist=function(next,expected=state.revision){
 };
 const originalRender=render;
 const commercialKey='gp-demo-commercial-v1';
-function commercialData(){try{return JSON.parse(localStorage.getItem(commercialKey)||'{}')}catch{return {customers:[],prices:[]}}}
+function commercialData(){try{const d=JSON.parse(localStorage.getItem(commercialKey)||'{}');return {customers:Array.isArray(d.customers)?d.customers:[],prices:Array.isArray(d.prices)?d.prices:[]};}catch{return {customers:[],prices:[]}}}
 function saveCommercial(data){localStorage.setItem(commercialKey,JSON.stringify(data))}
 function renderDemoCommercial(which){
  const data=commercialData();
